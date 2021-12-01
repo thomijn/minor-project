@@ -1,9 +1,15 @@
-import { useContext } from "react";
+import { useRouter } from "next/dist/client/router";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../lib/context";
 import { auth, googleAuthProvider } from "../lib/firebase";
 
-export default function Enter(props) {
+export default function Enter() {
   const { user, username } = useContext(UserContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) router.push("/");
+  }, [user]);
 
   return (
     <main>

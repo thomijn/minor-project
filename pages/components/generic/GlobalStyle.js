@@ -15,7 +15,8 @@ export const GlobalStyle = createGlobalStyle`
     3. Allow percentage-based heights in the application
     */
     html, body {
-    height: 100%
+    font-family: Ubuntu;
+    height: 100%;
     }
     /*
     4. Improve the typography across the site.
@@ -38,6 +39,7 @@ export const GlobalStyle = createGlobalStyle`
     7. Create a root stacking context
     */
     #__next {
+    height: 100%;
     isolation: isolate;
     }
 `;
