@@ -9,7 +9,7 @@ export default function Enter() {
 
   useEffect(() => {
     if (user) router.push("/");
-  }, [user]);
+  }, [user, router]);
 
   return (
     <main>
@@ -34,7 +34,7 @@ function SignInButton() {
 
   return (
     <button className="btn-google" onClick={signInWithGoogle}>
-      <img src={"/google.png"} /> Sign in with Google
+      Sign in with Google
     </button>
   );
 }

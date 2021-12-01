@@ -66,7 +66,7 @@ export default function Home(props) {
         setScrolling(false);
       }, 1000)
     );
-  }, []);
+  }, [isScrolling]);
 
   useEffect(() => {
     const number = Math.floor((scrollHeight + 80) / (bboxCard.height + 16) + 1);
@@ -86,7 +86,7 @@ export default function Home(props) {
         Math.round(((scrollHeight + 80) / (206 * 100)) * bboxtimeLine.height)
       );
     }
-  }, [scrollHeight]);
+  }, [scrollHeight, bboxCard.height, bboxtimeLine.height]);
 
   return (
     <Wrapper>
