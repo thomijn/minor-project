@@ -17,12 +17,12 @@ const Button = (props) => {
 
 const ButtonBase = styled.button`
   font-size: 1.1rem;
-  font-weight: 400;
+  font-weight: 700;
+  text-align: center;
   max-width: fit-content;
   border: none;
   border-radius: 7px;
-  padding: 8px 16px;
-  text-align: start;
+  padding: 12px 24px;
   position: relative;
   white-space: normal;
   cursor: pointer;
@@ -31,6 +31,7 @@ const ButtonBase = styled.button`
   align-items: center;
   gap: 32px;
   text-overflow: ellipsis;
+  justify-content: center;
 
   & > svg {
     display: block;
@@ -78,24 +79,17 @@ const ButtonBase = styled.button`
       width: 100%;
       max-width: 100%;
     `}
-
-  &:active {
-    box-shadow: 0px 0px 0px;
-    transform: translateY(3px);
-  }
 `;
 
 const FillButton = styled(ButtonBase)`
-  background-color: ${(props) => props.theme.lighterBlue};
-  color: #fff;
-  box-shadow: #1b7c9a 0px 3px 0px;
+  background-color: #fbcb22;
+  color: #5f1d7d;
 `;
 
 const LightButton = styled(ButtonBase)`
   padding: 14px 28px;
   background-color: ${(props) => props.theme.lighterBlueLight};
   color: ${(props) => props.theme.darkerBlue};
-  box-shadow: #91b8c4 0px 3px 0px;
 `;
 
 export default Button;

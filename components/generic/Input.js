@@ -24,25 +24,25 @@ Input.displayName = "Input";
 const StyledInput = styled.input`
   width: ${(props) => props.width || "100%"};
   border-radius: 10px;
-  border: 2px solid #91b8c4;
-  background-color: #fff;
+  border: none;
+  background-color: #f2f2f2;
   text-align: left;
-  padding: 14px 28px;
+  padding: 12px 24px;
   box-shadow: none;
   -webkit-appearance: none;
   color: ${(props) => props.theme.darkerBlue};
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.75em;
   box-sizing: border-box;
 
   &:focus {
-    outline: 2px solid ${(props) => props.theme.darkBlue};
-    border: 2px solid #fff;
+    outline: 2px solid #fbcb22;
   }
 
   &::placeholder {
     font-weight: 400;
+    font-style: italic;
     color: rgba(0, 0, 0, 0.5);
   }
 
