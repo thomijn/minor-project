@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ const links = [
   { text: "Home", url: "/", icon: <Home size={17} /> },
   {
     text: "Challenges",
-    url: "/gastlessen",
+    url: "/challenges",
     icon: <Dribbble size={17} />,
   },
   { text: "Tijdlijn", url: "/toolkit", icon: <Clock size={17} /> },
@@ -29,6 +29,12 @@ const links = [
 const SideMenu = () => {
   const { menu, toggleMenu } = useStore();
   const router = useRouter();
+
+  useEffect(() => {
+    setTimeout(() => {
+      toggleMenu(false);
+    }, 0);
+  }, [router.pathname]);
 
   return (
     <>

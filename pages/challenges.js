@@ -11,13 +11,11 @@ import {
   Option,
   OptionsWrapper,
   Image,
+  CardAction,
   TitleSpan,
-  WhoWrapper,
-  WhoOption,
 } from "../styles/homeStyles";
 import { debounce } from "lodash";
 import { HamburgerMenu } from "../components/HamburgerMenu";
-import { useRouter } from "next/dist/client/router";
 
 const optionsVariants = {
   selected: {
@@ -48,13 +46,7 @@ const options = [
   { name: "Variant 2", id: 2 },
 ];
 
-const whoOptions = [
-  { name: "publiek", id: 1 },
-  { name: "vrienden", id: 2 },
-  { name: "privé", id: 3 },
-];
-
-export default function Home(props) {
+export default function Challenges(props) {
   const { posts } = props;
   const [phaseColor, setPhaseColor] = useState("#faca3b");
   const [phase, setPhase] = useState("Beginfase");
@@ -63,9 +55,7 @@ export default function Home(props) {
   const [bboxtimeLine, ref1] = useBbox();
   const [scrollHeight, setScrollHeight] = useState(0);
   const [selected, setSelected] = useState(2);
-  const [whoSelected, setWhoSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
     window.addEventListener("scroll", (e) => {
@@ -103,28 +93,11 @@ export default function Home(props) {
 
   return (
     <Wrapper>
-      <h1>Tijdlijn</h1>
-
-      <WhoWrapper>
-        {whoOptions.map((option) => (
-          <WhoOption
-            initial={false}
-            key={option.id}
-            onClick={() => setWhoSelected(option.id)}
-            animate={{
-              backgroundColor: whoSelected === option.id ? "#5f1d7d" : "#fff",
-              color: whoSelected === option.id ? "#fff" : "#818181",
-            }}
-          >
-            {option.name}
-          </WhoOption>
-        ))}
-      </WhoWrapper>
+      <h1>Challenges</h1>
 
       <OptionsWrapper>
         {options.map((option) => (
           <Option
-            initial={false}
             key={option.id}
             onClick={() => setSelected(option.id)}
             animate={selected === option.id ? "selected" : "default"}
@@ -192,22 +165,21 @@ export default function Home(props) {
         </Col>
         <Col style={{ overflowX: "hidden" }} flex="30">
           {posts.map((post) => (
-            <Card
-              onClick={() => router.push("/post/2")}
-              ref={ref2}
-              key={post.id}
-            >
+            <Card fill ref={ref2} key={post.id}>
               <div
                 style={{
                   width: "100%",
                   display: "flex",
                   gap: "16px",
+
                   justifyContent: "space-between",
                 }}
               >
                 <h2>
                   {post.title}{" "}
-                  <TitleSpan>2 december 2021 | Alex - mantelzorger</TitleSpan>
+                  <TitleSpan fill>
+                    2 december 2021 | Alex - mantelzorger
+                  </TitleSpan>
                 </h2>
 
                 <Image />
@@ -217,6 +189,7 @@ export default function Home(props) {
                 cum reprehenderit molestiae ut ut quas totam nostrum rerum est
                 autem
               </p>
+              <CardAction>Doe mee!</CardAction>
             </Card>
           ))}
         </Col>

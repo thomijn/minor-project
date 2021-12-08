@@ -15,6 +15,17 @@ export const Wrapper = styled.div`
     line-height: 46px;
     margin-bottom: 16px;
     color: #5f1d7d;
+    line-height: 1.2;
+  }
+`;
+
+export const GoBack = styled(motion.p)`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+
+  svg {
+    margin-right: 4px;
   }
 `;
 
@@ -27,7 +38,9 @@ export const Card = styled.div`
   max-width: 100%;
   overflow: hidden;
   margin-bottom: 16px;
-  height: 190px;
+  /* height: 250px; */
+  display: flex;
+  flex-direction: column;
 
   h2 {
     white-space: nowrap;
@@ -35,20 +48,62 @@ export const Card = styled.div`
     text-overflow: ellipsis;
     line-height: 1.2;
     color: #5f1d7d;
+    font-size: 1.2rem;
     margin-bottom: 32px;
   }
 
   p {
     overflow: hidden;
+    font-size: 0.9rem;
     text-overflow: ellipsis;
   }
+
+  ${(props) =>
+    props.fill &&
+    css`
+      color: #fff;
+      background: #5f1d7d;
+
+      h2 {
+        color: #fff;
+      }
+    `}
+`;
+
+export const CardAction = styled.button`
+  background-color: #faca3b;
+  border-radius: 25px;
+  padding: 0px 16px;
+  font-weight: 700;
+  color: #5f1d7d;
+  border: none;
+  align-self: flex-start;
+  margin: 16px 0px;
+`;
+
+export const TitleSpan = styled.span`
+  font-size: 0.7rem;
+  font-style: italic;
+  display: block;
+  font-weight: 300;
+  opacity: 0.9;
+  margin-top: 8px;
+  overflow: visible;
+  color: #000;
+
+  ${(props) =>
+    props.fill &&
+    css`
+      color: #fff;
+    `}
 `;
 
 export const Image = styled.div`
-  min-width: 50px;
-  height: 50px;
+  min-width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: #faca3b;
+  border: 2px solid #5f1d7d;
+  background-color: #f2f2f2;
 `;
 
 export const TimelineWrapper = styled.div`
@@ -116,4 +171,20 @@ export const Option = styled(motion.div)`
   border-radius: 40px;
   font-weight: bold;
   color: #5f1d7d;
+  width: fit-content;
+`;
+
+export const WhoWrapper = styled(motion.div)`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 16px;
+`;
+
+export const WhoOption = styled(motion.div)`
+  padding: 0px 8px;
+  font-size: 1rem;
+  border-radius: 40px;
+  font-weight: 400;
+  color: #818181;
 `;

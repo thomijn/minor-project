@@ -1,6 +1,6 @@
 import create from "zustand";
 
 export const useStore = create((set) => ({
-  menu: true,
+  menu: false,
   toggleMenu: (data) => set({ menu: data }),
 }));
