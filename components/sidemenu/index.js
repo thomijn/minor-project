@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import { auth } from "../../lib/firebase";
 
 import { useStore } from "../../store";
 import { useRouter } from "next/dist/client/router";
@@ -10,20 +11,20 @@ import {
   Dribbble,
   Home,
   Info,
+  LogOut,
   PlusCircle,
   Settings,
 } from "react-feather";
 
 const links = [
-  { text: "Home", url: "/", icon: <Home size={17} /> },
+  { text: "Tijdlijn", url: "/home", icon: <Clock size={17} /> },
   {
     text: "Challenges",
     url: "/challenges",
     icon: <Dribbble size={17} />,
   },
-  { text: "Tijdlijn", url: "/toolkit", icon: <Clock size={17} /> },
-  { text: "Informatie", url: "/downloads", icon: <Info size={17} /> },
-  { text: "Bericht plaatsen", url: "/support", icon: <PlusCircle size={17} /> },
+  { text: "Informatie", url: "/info", icon: <Info size={17} /> },
+  { text: "Bericht plaatsen", url: "/nieuw", icon: <PlusCircle size={17} /> },
 ];
 
 const SideMenu = () => {
@@ -50,6 +51,7 @@ const SideMenu = () => {
             <Avatar />
             <p>Hi John!</p>
           </PersonWrapper>
+          <hr style={{ margin: "16px 0px", width: "86%" }} />
 
           <LinksWrapper>
             <ul>
@@ -72,7 +74,17 @@ const SideMenu = () => {
             <span>
               <Settings color="#fbcb22" size={17} /> Instellingen
             </span>
+            <span
+              onClick={() => {
+                auth.signOut();
+                router.push("/");
+              }}
+            >
+              <LogOut color="#fbcb22" size={17} /> Uitloggen
+            </span>
           </UnderWrapper>
+
+          <Logo width={50} src="/images/logo.png" />
         </motion.div>
       </SideMenuWrapper>
       <AnimatePresence>
@@ -96,7 +108,7 @@ export const SideMenuWrapper = styled(motion.div)`
   padding: 32px 24px 24px 24px;
   right: 0px;
   min-width: 250px;
-  z-index: 2;
+  z-index: 3;
   font-size: 0.9rem;
 `;
 
@@ -104,6 +116,7 @@ export const PersonWrapper = styled(motion.div)`
   display: flex;
   gap: 16px;
   align-items: center;
+  margin-top: 50px;
 
   p {
     color: #fff;
@@ -121,7 +134,7 @@ export const Overlay = styled(motion.div)`
 
 export const UnderWrapper = styled(motion.div)`
   position: absolute;
-  bottom: 32px;
+  bottom: 162px;
   width: 70%;
 
   span {
@@ -129,7 +142,7 @@ export const UnderWrapper = styled(motion.div)`
     align-items: center;
     gap: 16px;
     color: #fff;
-    margin-top: 16px;
+    margin: 24px 8px 0px 8px;
   }
 `;
 
@@ -166,7 +179,7 @@ export const LinksWrapper = styled(motion.div)`
 export const Span = styled.span`
   display: flex;
   align-items: center;
-  color: #fff;
+  color: ${(props) => (props.active ? "#5f1d7d" : "#fff")};
   gap: 8px;
   padding: 4px 8px;
 
@@ -184,6 +197,14 @@ export const Active = styled(motion.div)`
   border-radius: 10px 0px 0px 10px;
   padding: 6px 8px;
   z-index: -1;
+`;
+
+export const Logo = styled(motion.img)`
+  position: absolute;
+  margin: auto;
+  left: -10%;
+  right: 0;
+  bottom: 32px;
 `;
 
 export default SideMenu;

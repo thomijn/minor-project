@@ -88,7 +88,6 @@ export const TitleSpan = styled.span`
   font-weight: 300;
   opacity: 0.9;
   margin-top: 8px;
-  overflow: visible;
   color: #000;
 
   ${(props) =>
@@ -141,6 +140,7 @@ export const Indicator = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 3;
 
   ${(props) =>
     props.versionOne &&
@@ -152,7 +152,6 @@ export const Indicator = styled(motion.div)`
     position: relative;
     font-weight: 600;
     color: #fff;
-    z-index: 1;
   }
 `;
 
@@ -187,4 +186,38 @@ export const WhoOption = styled(motion.div)`
   border-radius: 40px;
   font-weight: 400;
   color: #818181;
+`;
+
+export const EngagementWrapper = styled(motion.div)`
+  color: "red";
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #5f1d7d;
+  font-weight: 700;
+  gap: 16px;
+  margin-top: 16px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+`;
+
+export const FloatButton = styled(motion.button)`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #5f1d7d;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 2;
+  border: none;
+  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.25);
 `;

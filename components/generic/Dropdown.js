@@ -2,9 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { StyledLabel } from "./Input";
-import { ChevronDown } from "react-feather";
+import { ArrowDown, ChevronDown } from "react-feather";
 
-const Dropdown = ({ items, title, setTitle, small, label, extraLabel }) => {
+const Dropdown = ({
+  items,
+  title,
+  setTitle,
+  small,
+  label,
+  extraLabel,
+  style,
+}) => {
   const [clicked, setClicked] = useState(false);
   const [titleHovered, setTitleHovered] = useState(false);
   const [curIndex, setCurIndex] = useState(-1);
@@ -79,15 +87,27 @@ const Dropdown = ({ items, title, setTitle, small, label, extraLabel }) => {
 
   return (
     <DropdownContainer ref={dropdownContainer}>
-      <StyledLabel>
+      <StyledLabel
+        style={{
+          backgroundColor: "#fff",
+          padding: "0px 4px",
+          top: 20,
+          position: "relative",
+          transform: "translateX(14px)",
+          zIndex: 1,
+          width: "fit-content",
+        }}
+      >
         {label} {extraLabel && <span>{extraLabel}</span>}
       </StyledLabel>
       <TitleContainer
+        style={style}
         style={{ borderRadius: clicked ? "10px 10px 0px 0px" : 10 }}
         small={small}
         ref={dropdown}
         type="button"
         onClick={() => {
+          console.log("test");
           setClicked(!clicked);
         }}
         onHoverStart={() => {
@@ -98,8 +118,20 @@ const Dropdown = ({ items, title, setTitle, small, label, extraLabel }) => {
         }}
       >
         <Title>{title}</Title>
-        <ArrowSvgContainer animate={{ rotateZ: clicked ? 180 : 0 }}>
-          <ChevronDown size={22} />
+        <ArrowSvgContainer
+          transition={{ duration: 0 }}
+          animate={{
+            borderRadius: clicked ? "7px 7px 0px 7px" : "7px 7px 7px 7px",
+          }}
+        >
+          <motion.div
+            animate={{
+              rotateZ: clicked ? 180 : 0,
+              y: clicked ? -5 : 0,
+            }}
+          >
+            <ArrowDown color="#fbcb22" size={22} />
+          </motion.div>
         </ArrowSvgContainer>
       </TitleContainer>
       <OptionsContainer
@@ -140,12 +172,10 @@ const DropdownContainer = styled.div`
   justify-content: center;
   margin: 0;
   border-radius: 10px;
-  border: 2px solid #91b8c4;
-  color: ${(props) => props.theme.darkerBlue};
+  border: 1px solid #5f1d7d;
+  color: #000;
   border: none;
   min-width: 100px;
-  font-size: 1.1rem;
-  font-weight: 400;
   line-height: 1.75em;
 
   *::-webkit-scrollbar {
@@ -170,17 +200,18 @@ const DropdownContainer = styled.div`
 `;
 
 const Title = styled.div`
-  color: ${(props) => props.theme.darkerBlue};
-  font-size: 1.2rem;
+  color: #000;
   overflow-wrap: break-word;
 `;
 
 const TitleContainer = styled(motion.button)`
   width: 100%;
+  position: relative;
   transform: translateY(-2px);
-  border: 2px solid #91b8c4;
-  padding: 14px 0.5rem 14px 20px;
-  min-height: 62.8px;
+
+  border: 2px solid #5f1d7d;
+  padding: 8px 0.5rem 8px 20px;
+  min-height: 46.6px;
   height: auto;
   background-color: #fff;
   border-radius: 10px;
@@ -188,29 +219,26 @@ const TitleContainer = styled(motion.button)`
   align-items: center;
   justify-content: space-between;
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
 `;
 
 const ArrowSvgContainer = styled(motion.span)`
   position: absolute;
-  right: 17px;
-  color: ${(props) => props.theme.darkerBlue};
-`;
-
-const ArrowSvg = styled(motion.svg)`
-  width: 0.8125rem;
-  height: 0.4375rem;
-  fill: green;
+  width: 45px;
+  height: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  right: 0px;
+  border-radius: 7px;
+  background: #5f1d7d;
 `;
 
 const OptionsContainer = styled(motion.ul)`
-  font-size: 1.2em;
   display: flex;
   width: 100%;
   flex-direction: column;
-  border: 2px solid #91b8c4;
+  border: 2px solid #5f1d7d;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   justify-content: flex-start;
@@ -218,9 +246,8 @@ const OptionsContainer = styled(motion.ul)`
   padding: 0;
   margin: 0 0 1.2rem 0;
   position: absolute;
-  top: 96px;
-  z-index: 2;
-  font-weight: 600;
+  top: 80px;
+  z-index: 10;
   /* max-height: 100px; */
 `;
 
@@ -230,7 +257,7 @@ const Option = styled(motion.li)`
   padding: 0.5rem 0.5rem 0.5rem 20px;
   border-bottom-width: ${(props) => (props.noborder ? "0px" : "2px")};
   border-bottom-style: solid;
-  border-bottom-color: ${(props) => (props.noborder ? "none" : "#91b8c4")};
+  border-bottom-color: ${(props) => (props.noborder ? "none" : "#5f1d7d")};
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

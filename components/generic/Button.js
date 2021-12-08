@@ -22,7 +22,7 @@ const ButtonBase = styled.button`
   max-width: fit-content;
   border: none;
   border-radius: 7px;
-  padding: 12px 24px;
+  padding: 8px 24px;
   position: relative;
   white-space: normal;
   cursor: pointer;

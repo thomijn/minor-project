@@ -27,7 +27,7 @@ const StyledInput = styled.input`
   border: none;
   background-color: #f2f2f2;
   text-align: left;
-  padding: 12px 24px;
+  padding: 8px 24px;
   box-shadow: none;
   -webkit-appearance: none;
   color: ${(props) => props.theme.darkerBlue};
@@ -71,10 +71,37 @@ const InputContainer = styled.div`
   }
 `;
 
+export const TextArea = styled.textarea`
+  width: ${(props) => props.width || "100%"};
+  border-radius: 10px;
+  border: none;
+  background-color: #f2f2f2;
+  text-align: left;
+  padding: 8px 24px;
+  box-shadow: none;
+  margin-top: 16px;
+  min-height: 250px;
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.75em;
+  margin-bottom: 8px;
+
+  &:focus {
+    outline: 2px solid #fbcb22;
+  }
+
+  &::placeholder {
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.5);
+  }
+`;
+
 export const StyledLabel = styled.label`
   display: inline-block;
   margin-bottom: 8px;
   font-size: 1.2rem;
+  color: #5f1d7d;
 
   span {
     display: inline;

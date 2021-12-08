@@ -4,6 +4,8 @@ export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: #fff;
+  overflow: hidden;
+  position: absolute;
 
   h1 {
     position: absolute;
@@ -11,6 +13,7 @@ export const Wrapper = styled.div`
     left: 24px;
     line-height: 1.1;
     color: #5f1d7d;
+    z-index: 1;
   }
 
   input {
@@ -18,13 +21,24 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const Circle = styled.div`
+  position: absolute;
+  width: 680px;
+  height: 680px;
+  margin: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 140px;
+  border-radius: 50%;
+  background: #5f1d7d;
+  z-index: 0;
+`;
+
 export const LoginWrapper = styled.div`
   width: 100%;
   position: absolute;
   bottom: 0px;
-  background-color: #5f1d7d;
   padding: 64px 24px 24px 24px;
-  border-radius: 20px 20px 0px 0px;
   color: #fff;
 `;
 
