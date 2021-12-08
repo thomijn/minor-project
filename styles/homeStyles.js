@@ -140,7 +140,7 @@ export const Indicator = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 3;
+  z-index: 10;
 
   ${(props) =>
     props.versionOne &&

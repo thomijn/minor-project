@@ -15,7 +15,9 @@ const Post = () => {
       </GoBack>
       <HamburgerMenu menu={true} toggleMenu={false} />
 
-      <h1>Titel van eigen bericht</h1>
+      <h1>
+        Titel van <br /> eigen bericht
+      </h1>
 
       <Block>
         <Camera size={40} color="#818181" />
