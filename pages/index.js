@@ -13,6 +13,7 @@ import {
   Image,
 } from "../styles/homeStyles";
 import { debounce } from "lodash";
+import { HamburgerMenu, HamburgerWrapper } from "../components/HamburgerMenu";
 
 const optionsVariants = {
   selected: {
@@ -103,6 +104,8 @@ export default function Home(props) {
           </Option>
         ))}
       </OptionsWrapper>
+
+      <HamburgerMenu menu={true} toggleMenu={false} />
 
       <TimelineWrapper>
         <Col flex="1">
