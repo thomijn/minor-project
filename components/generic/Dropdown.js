@@ -101,7 +101,6 @@ const Dropdown = ({
         {label} {extraLabel && <span>{extraLabel}</span>}
       </StyledLabel>
       <TitleContainer
-        style={style}
         style={{ borderRadius: clicked ? "10px 10px 0px 0px" : 10 }}
         small={small}
         ref={dropdown}
