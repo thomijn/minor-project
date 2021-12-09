@@ -4,6 +4,7 @@ import Dropdown from "./generic/Dropdown";
 import Input from "./generic/Input";
 import Button from "./generic/Button";
 import { useRouter } from "next/dist/client/router";
+import { Camera } from "react-feather";
 
 const UsernameForm = () => {
   const [Iam, setIam] = useState("Mantelzorger, case manager ...");
@@ -15,11 +16,10 @@ const UsernameForm = () => {
       <Circle />
       <h1>
         Maak een <br /> account <br />
-        <span>Vertel wat over uzelf</span>
+        <Span>Vertel wat over uzelf</Span>
       </h1>
 
       <FormWrapper>
-        <div>
           <Dropdown
             label="Ik ben"
             title={Iam}
@@ -27,7 +27,6 @@ const UsernameForm = () => {
             name="group"
             items={["Mantelzorger", "Case manager"]}
           />
-        </div>
         <div style={{ marginBottom: 32 }}>
           <Dropdown
             label="Ik zorg voor"
@@ -37,6 +36,7 @@ const UsernameForm = () => {
             items={["Mantelzorger", "Case manager"]}
           />
         </div>
+
         <Input label="Datum vaststelling alzheimer" placeholder="24-05-2010" />
 
         <Input label="Hoeveel uur per week" placeholder="10 uur" />
@@ -47,22 +47,20 @@ const UsernameForm = () => {
           Registreer
         </Button>
       </FormWrapper>
-
-      <Avatar />
+      <Avatar>
+        <Camera size={30} color='gray' />
+      </Avatar>
     </Wrapper>
   );
 };
 
 export const Wrapper = styled.div`
   width: 100%;
-  height: 100%;
+  height:100%;
   background-color: #fff;
   overflow-x: hidden;
   position: absolute;
 
-  input {
-    margin-bottom: 16px !important;
-  }
 
   h1 {
     position: absolute;
@@ -71,19 +69,6 @@ export const Wrapper = styled.div`
     line-height: 1.1;
     color: #fff;
     z-index: 1;
-  }
-
-  span {
-    transform: translateY(-10px);
-    display: inline-block;
-    font-weight: 400;
-    font-size: 0.9rem;
-    color: #fbcb22;
-    z-index: 1;
-  }
-
-  input {
-    margin-bottom: 16px;
   }
 `;
 
@@ -110,21 +95,31 @@ export const Avatar = styled.div`
   z-index: 1;
   left: 24px;
   top: 200px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+`;
+
+export const Span = styled.div`
+    transform: translateY(-10px);
+    display: inline-block;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #fbcb22;
+    z-index: 1;
 `;
 
 export const FormWrapper = styled.div`
-  z-index: 5;
   width: 100%;
-  bottom: 0px;
   top: 250px;
-  position: absolute;
+  position: relative;
+
   padding: 64px 24px 24px 24px;
   color: #fff;
-  height: fit-content;
   margin-bottom: 16px;
 
   input {
-    z-index: -1;
+    margin-bottom: 16px;
   }
 `;
 

@@ -41,6 +41,8 @@ export const Card = styled.div`
   /* height: 250px; */
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 
   h2 {
     white-space: nowrap;
@@ -109,6 +111,8 @@ export const TimelineWrapper = styled.div`
   display: flex;
   gap: 24px;
   align-items: stretch;
+  position: relative;
+  z-index: 10;
 `;
 
 export const Col = styled.div`
@@ -121,6 +125,7 @@ export const Timeline = styled(motion.div)`
   height: 100%;
   background: #faca3b;
   border-radius: 15px;
+  z-index: 10;
 
   ${(props) =>
     props.versionTwo &&
