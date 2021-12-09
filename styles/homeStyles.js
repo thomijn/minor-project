@@ -2,13 +2,14 @@ import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
+
   width: 100%;
   height: 100%;
   background-color: #fff;
   padding: 24px;
 
   h1 {
-    font-family: Ubuntu;
+    font-family: 'Ubuntu', sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 2rem;

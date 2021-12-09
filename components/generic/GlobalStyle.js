@@ -1,6 +1,31 @@
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('../fonts/Cabin-Bold.ttf') format('truetype');
+    font-weight: bold;
+  }
+
+  @font-face {
+    font-family: 'Cabin';
+    src: url('../fonts/Cabin-Regular.ttf') format('truetype');
+    font-weight: normal;
+  }
+
+  @font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Bold.ttf') format('truetype');
+    font-weight: bold;
+  }
+
+  @font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf') format('truetype');
+    font-weight: normal;
+  }
+
     /*
     1. Use a more-intuitive box-sizing model.
     */
@@ -15,7 +40,7 @@ export const GlobalStyle = createGlobalStyle`
     3. Allow percentage-based heights in the application
     */
     html, body {
-    font-family: Ubuntu;
+    font-family: 'Ubuntu';
     height: 100%;
     }
     /*
