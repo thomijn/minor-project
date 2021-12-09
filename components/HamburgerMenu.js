@@ -55,7 +55,7 @@ export const HamburgerMenu = () => {
 };
 
 export const HamburgerWrapper = styled(motion.div)`
-  z-index: 3;
+  z-index: 12;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -108,7 +108,7 @@ export const SideMenuWrapper = styled(motion.div)`
   padding: 32px 24px 24px 24px;
   right: 0px;
   min-width: 250px;
-  z-index: 3;
+  z-index: 11;
   font-size: 0.9rem;
 `;
 

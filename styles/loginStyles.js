@@ -15,10 +15,6 @@ export const Wrapper = styled.div`
     color: #5f1d7d;
     z-index: 1;
   }
-
-  input {
-    margin-bottom: 16px;
-  }
 `;
 
 export const Circle = styled.div`
@@ -36,7 +32,10 @@ export const Circle = styled.div`
 
 export const LoginWrapper = styled.div`
   width: 100%;
-  position: absolute;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   bottom: 0px;
   padding: 64px 24px 24px 24px;
   color: #fff;
