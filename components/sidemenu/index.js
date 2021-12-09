@@ -108,7 +108,7 @@ export const SideMenuWrapper = styled(motion.div)`
   padding: 32px 24px 24px 24px;
   right: 0px;
   min-width: 250px;
-  z-index: 11;
+  z-index: 12;
   font-size: 0.9rem;
 `;
 
@@ -129,7 +129,7 @@ export const Overlay = styled(motion.div)`
   height: 100%;
   background-color: #fff;
   opacity: 0.5;
-  z-index: 1;
+  z-index: 11;
 `;
 
 export const UnderWrapper = styled(motion.div)`
