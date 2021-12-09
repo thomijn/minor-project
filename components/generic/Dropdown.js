@@ -67,7 +67,7 @@ const Dropdown = ({
             ? { backgroundColor: "#fff" }
             : { backgroundColor: "#fff" }
         }
-        whileTap={{ backgroundColor: "#fff" }}
+        whileTap={{ backgroundColor: "#E2C7DD" }}
         onHoverStart={() => {
           setCurIndex(index);
         }}
@@ -126,7 +126,7 @@ const Dropdown = ({
           <motion.div
             animate={{
               rotateZ: clicked ? 180 : 0,
-              y: clicked ? -5 : 0,
+              y: clicked ? -5 : 5,
             }}
           >
             <ArrowDown color="#fbcb22" size={22} />
@@ -174,8 +174,10 @@ const DropdownContainer = styled.div`
   border: 1px solid #5f1d7d;
   color: #000;
   border: none;
+  position:relative;
   min-width: 100px;
   line-height: 1.75em;
+  z-index: 10;
 
   *::-webkit-scrollbar {
     width: 10px;
@@ -224,11 +226,11 @@ const TitleContainer = styled(motion.button)`
 const ArrowSvgContainer = styled(motion.span)`
   position: absolute;
   width: 45px;
-  height: 100%;
+  height: 101%;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  right: 0px;
+  right: -1px;
   border-radius: 7px;
   background: #5f1d7d;
 `;
@@ -243,26 +245,28 @@ const OptionsContainer = styled(motion.ul)`
   justify-content: flex-start;
   overflow-y: hidden;
   padding: 0;
-  margin: 0 0 1.2rem 0;
-  position: absolute;
-  top: 80px;
+  margin: 0 0 0 0;
+  position: relative;
   z-index: 10;
-  /* max-height: 100px; */
+  top:-4px;
 `;
 
 const Option = styled(motion.li)`
   height: auto;
-
   padding: 0.5rem 0.5rem 0.5rem 20px;
   border-bottom-width: ${(props) => (props.noborder ? "0px" : "2px")};
   border-bottom-style: solid;
-  border-bottom-color: ${(props) => (props.noborder ? "none" : "#5f1d7d")};
+  border-bottom-color: ${(props) => (props.noborder ? "none" : "#f2f2f2")};
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   overflow-wrap: break-word;
   user-select: none;
   cursor: pointer;
+
+  &:last-child {
+    border-bottom:none;
+  }
 `;
 
 export default Dropdown;
