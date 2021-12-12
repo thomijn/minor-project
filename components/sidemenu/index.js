@@ -9,7 +9,6 @@ import { useRouter } from "next/dist/client/router";
 import {
   Clock,
   Dribbble,
-  Home,
   Info,
   LogOut,
   PlusCircle,

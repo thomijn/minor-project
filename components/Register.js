@@ -6,7 +6,7 @@ import Button from "./generic/Button";
 import { useRouter } from "next/dist/client/router";
 import { Camera } from "react-feather";
 
-const UsernameForm = () => {
+const Register = () => {
   const [Iam, setIam] = useState("Mantelzorger, case manager ...");
   const [iCare, setICare] = useState("Mijn vader, mijn moeder ...");
   const router = useRouter();
@@ -123,4 +123,4 @@ export const FormWrapper = styled.div`
   }
 `;
 
-export default UsernameForm;
+export default Register;
