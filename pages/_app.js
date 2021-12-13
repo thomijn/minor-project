@@ -1,3 +1,5 @@
+import { Toaster } from "react-hot-toast";
+
 import { UserContext } from "../lib/context";
 import { useUserData } from "../lib/hooks";
 import { GlobalStyle } from "../components/generic/GlobalStyle";
@@ -10,6 +12,7 @@ export default function App({ Component, pageProps }) {
     <UserContext.Provider value={userData}>
       <GlobalStyle />
       <SideMenu />
+      <Toaster />
       <Component {...pageProps} />
     </UserContext.Provider>
   );

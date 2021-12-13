@@ -16,6 +16,14 @@ import {
 } from "../styles/homeStyles";
 import { debounce } from "lodash";
 import { HamburgerMenu } from "../components/HamburgerMenu";
+import { firestore, postToJSON } from "../lib/firebase";
+import { Row } from "./[uid]/[slug]";
+import { User } from "react-feather";
+import { arrayRemove, arrayUnion, doc } from "firebase/firestore";
+import { useContext } from "react";
+import { UserContext } from "../lib/context";
+import toast from "react-hot-toast";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 const optionsVariants = {
   selected: {
@@ -47,7 +55,6 @@ const options = [
 ];
 
 export default function Challenges(props) {
-  const { posts } = props;
   const [phaseColor, setPhaseColor] = useState("#faca3b");
   const [phase, setPhase] = useState("Beginfase");
   const [isScrolling, setScrolling] = useState(false);
@@ -56,6 +63,13 @@ export default function Challenges(props) {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [selected, setSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
+  const userData = useContext(UserContext);
+  const [realtimeChallenges] = useCollectionData(
+    firestore.collection("challenges"),
+    {
+      idField: "id",
+    }
+  );
 
   useEffect(() => {
     window.addEventListener("scroll", (e) => {
@@ -91,6 +105,31 @@ export default function Challenges(props) {
     }
   }, [scrollHeight, bboxCard.height, bboxtimeLine.height]);
 
+  const handleParticipate = async (challenge) => {
+    const challengeRef = firestore.collection("challenges").doc(challenge.id);
+
+    const participate = challenge?.participants.includes(userData.user.uid);
+
+    try {
+      challengeRef.update({
+        participants: participate
+          ? arrayRemove(userData.user.uid)
+          : arrayUnion(userData.user.uid),
+      });
+
+      toast.success(
+        participate
+          ? "Je doet niet meer mee met de challenge"
+          : "Je doet mee met de challenge"
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error("Er is iets misgegaan");
+    }
+  };
+
+  const challenges = realtimeChallenges ? realtimeChallenges : props.challenges;
+
   return (
     <Wrapper>
       <h1>Challenges</h1>
@@ -110,104 +149,67 @@ export default function Challenges(props) {
 
       <HamburgerMenu menu={true} toggleMenu={false} />
 
-      <TimelineWrapper>
-        <Col flex="1">
-          <AnimatePresence exitBeforeEnter initial={false}>
-            {selected === 1 ? (
-              <Timeline
-                initial={{ x: -50 }}
-                exit={{ x: -50 }}
-                key={1}
-                versionOne
-                animate={{ backgroundColor: phaseColor, x: 0 }}
-              >
-                <Indicator
-                  variants={indicatorVariants}
-                  custom={{ color: phaseColor, indicatorY }}
-                  animate={isScrolling ? "full" : "round"}
-                  style={{ x: -6, y: 70 }}
-                  versionOne
-                >
-                  <motion.span animate={{ opacity: isScrolling ? 1 : 0 }}>
-                    {phase}
-                  </motion.span>
-                </Indicator>
-              </Timeline>
-            ) : (
-              <div style={{ height: 100 * 206 }}>
-                <Timeline
-                  ref={ref1}
-                  initial={{ x: -50 }}
-                  exit={{ x: -50 }}
-                  key={2}
-                  versionTwo
-                  animate={{ backgroundColor: phaseColor, x: 0 }}
-                >
-                  <Indicator
-                    onPointerMove={(e) => {
-                      setScrolling(true);
-                      console.log(e);
-                    }}
-                    variants={indicatorVariants}
-                    custom={{ color: phaseColor }}
-                    animate={isScrolling ? "full" : "round"}
-                    style={{ x: -6, y: indicatorY }}
-                    versionTwo
-                  >
-                    <motion.span animate={{ opacity: isScrolling ? 1 : 0 }}>
-                      {phase}
-                    </motion.span>
-                  </Indicator>
-                </Timeline>
-              </div>
-            )}
-          </AnimatePresence>
-        </Col>
-        <Col style={{ overflowX: "hidden" }} flex="30">
-          {posts.map((post) => (
-            <Card fill ref={ref2} key={post.id}>
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  gap: "16px",
+      <Col style={{ overflowX: "hidden" }} flex="30">
+        {challenges.map((challenge) => (
+          <Card fill ref={ref2} key={challenge.id}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                gap: "16px",
 
+                justifyContent: "space-between",
+              }}
+            >
+              <h2 style={{ marginBottom: 8 }}>{challenge.title} </h2>
+            </div>
+            <p
+              style={{
+                WebkitLineClamp: 100,
+              }}
+            >
+              {challenge.description}
+            </p>
+            <Row
+              style={{
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <CardAction onClick={() => handleParticipate(challenge)}>
+                {challenge?.participants.includes(userData.user.uid)
+                  ? "Niet meer deelnemen"
+                  : "Doe mee!"}
+              </CardAction>
+              <Row
+                style={{
+                  color: "#faca3b",
+                  gap: 4,
+                  alignItems: "flex-start",
                   justifyContent: "space-between",
                 }}
               >
-                <h2>
-                  {post.title}{" "}
-                  <TitleSpan fill>
-                    2 december 2021 | Alex - mantelzorger
-                  </TitleSpan>
-                </h2>
-
-                <Image />
-              </div>
-              <p>
-                quia et suscipit suscipit recusandae consequuntur expedita et
-                cum reprehenderit molestiae ut ut quas totam nostrum rerum est
-                autem
-              </p>
-              <CardAction>Doe mee!</CardAction>
-            </Card>
-          ))}
-        </Col>
-      </TimelineWrapper>
+                <User size={20} /> {challenge.participants.length}
+              </Row>
+            </Row>
+          </Card>
+        ))}
+      </Col>
     </Wrapper>
   );
 }
 
-export async function getStaticProps() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-  const res = await response.json();
+export async function getServerSideProps(context) {
+  const challengesQuery = firestore.collection("challenges");
 
-  const responsePhoto = await fetch(
-    "https://jsonplaceholder.typicode.com/photos"
-  );
-  const resPhoto = await responsePhoto.json();
+  const challenges = (await challengesQuery.get()).docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
+  });
 
   return {
-    props: { posts: res, photos: resPhoto },
+    props: { challenges }, // will be passed to the page component as props
   };
 }

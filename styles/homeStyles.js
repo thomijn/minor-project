@@ -2,14 +2,13 @@ import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
-
   width: 100%;
   height: 100%;
   background-color: #fff;
   padding: 24px;
 
   h1 {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: "Ubuntu", sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 2rem;
@@ -24,6 +23,7 @@ export const GoBack = styled(motion.p)`
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+  z-index: 5;
 
   svg {
     margin-right: 4px;
@@ -58,7 +58,15 @@ export const Card = styled.div`
   p {
     overflow: hidden;
     font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
     text-overflow: ellipsis;
+  }
+
+  a {
+    font-size: 0.9rem;
+    color: #5f1d7d;
   }
 
   ${(props) =>
@@ -165,6 +173,9 @@ export const OptionsWrapper = styled(motion.div)`
   display: flex;
   flex-direction: row;
   gap: 16px;
+  position: relative;
+  left: 24px;
+  width: calc(100% + 24px);
   margin-bottom: 24px;
 `;
 
@@ -187,7 +198,7 @@ export const WhoWrapper = styled(motion.div)`
 `;
 
 export const WhoOption = styled(motion.div)`
-  padding: 0px 8px;
+  padding: 2px 8px;
   font-size: 1rem;
   border-radius: 40px;
   font-weight: 400;
@@ -223,7 +234,7 @@ export const FloatButton = styled(motion.button)`
   position: fixed;
   bottom: 32px;
   right: 32px;
-  z-index: 2;
+  z-index: 11;
   border: none;
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.25);
 `;

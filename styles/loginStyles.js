@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -36,9 +36,13 @@ export const LoginWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  bottom: 0px;
+  top: 200px;
   padding: 64px 24px 24px 24px;
   color: #fff;
+
+  input {
+    margin-bottom: 16px;
+  }
 `;
 
 export const OtherWrapper = styled.div`
@@ -57,4 +61,15 @@ export const OtherWrapper = styled.div`
     color: #fbcb22;
     margin-top: 5px;
   }
+
+  ${(props) =>
+    props.invert &&
+    css`
+      color: rgba(0, 0, 0, 0.8);
+      margin-top: 24px;
+
+      a {
+        color: #5f1d7d;
+      }
+    `}
 `;

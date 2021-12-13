@@ -1,35 +1,41 @@
 import { useContext, useState } from "react";
 import styled from "styled-components";
-import Dropdown from "./generic/Dropdown";
-import Input from "./generic/Input";
-import Button from "./generic/Button";
-import { useRouter } from "next/dist/client/router";
-import { Camera } from "react-feather";
 import { useForm } from "react-hook-form";
-import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
-import { firestore } from "../lib/firebase";
+import { Camera, ChevronLeft } from "react-feather";
+import { useRouter } from "next/dist/client/router";
 
-const Register = () => {
-  const [iAm, setIAm] = useState("Mantelzorger, case manager ...");
-  const [iCare, setICare] = useState("Mijn vader, mijn moeder ...");
+import Dropdown from "../components/generic/Dropdown";
+import Input from "../components/generic/Input";
+import Button from "../components/generic/Button";
+import { UserContext } from "../lib/context";
+import { firestore } from "../lib/firebase";
+import { GoBack } from "../styles/homeStyles";
+import { OtherWrapper } from "../styles/loginStyles";
+
+const MyData = () => {
+  const userData = useContext(UserContext);
+  const [iAm, setIAm] = useState(userData?.iAm);
+  const [iCare, setICare] = useState(userData?.iCare);
   const { register, handleSubmit } = useForm();
-  const { user } = useContext(UserContext);
 
   const router = useRouter();
 
-  const handleRegister = async (data) => {
-    console.log(data);
+  const handleEditProfile = async (data) => {
     try {
       firestore
         .collection("users")
-        .doc(user.uid)
-        .set({
-          ...data,
-          iAm,
-          iCare,
-        });
+        .doc(userData.user.uid)
+        .set(
+          {
+            ...data,
+            iAm,
+            iCare,
+          },
+          { merge: true }
+        );
       router.push("/home");
+      toast.success("Gegevens aangepast!");
     } catch (error) {
       console.log(error);
       toast.error("Er is iets misgegaan");
@@ -38,14 +44,19 @@ const Register = () => {
 
   return (
     <Wrapper>
+      <GoBack
+        style={{ color: "#faca3b", top: 24, left: 24, position: "absolute" }}
+        onClick={() => router.push("/home")}
+      >
+        <ChevronLeft size={20} /> Ga terug
+      </GoBack>
       <Circle />
-      <h1>
-        Maak een <br /> account <br />
-        <Span>Vertel wat over uzelf</Span>
+      <h1 style={{ top: 72 }}>
+        Profiel <br /> Aanpassen <br />
       </h1>
 
       <FormWrapper>
-        <form onSubmit={handleSubmit(handleRegister)}>
+        <form onSubmit={handleSubmit(handleEditProfile)}>
           <Dropdown
             label="Ik ben"
             title={iAm}
@@ -62,30 +73,14 @@ const Register = () => {
               items={["Vader", "Moeder", "Oma", "Opa", "Vriend", "Vriendin"]}
             />
           </div>
-          <Input
-            {...register("firstname", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Voornaam"
-            placeholder="Voornaam"
-          />
-          <Input
-            {...register("lastname", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Achternaam"
-            placeholder="Achternaam"
-          />
+
           <Input
             {...register("dateAlzheimer", {
               required: { value: true, message: "Dit veld is verplicht" },
               maxLength: { value: 32, message: "Maximaal 32 tekens" },
               minLength: { value: 2, message: "Minimaal 2 tekens" },
             })}
+            defaultValue={userData.dateAlzheimer}
             label="Datum vaststelling alzheimer"
             placeholder="24-05-2010"
           />
@@ -96,6 +91,7 @@ const Register = () => {
               maxLength: { value: 32, message: "Maximaal 32 tekens" },
               minLength: { value: 2, message: "Minimaal 2 tekens" },
             })}
+            defaultValue={userData.hoursWeek}
             label="Hoeveel uur per week"
             placeholder="10 uur"
           />
@@ -106,14 +102,19 @@ const Register = () => {
               maxLength: { value: 32, message: "Maximaal 32 tekens" },
               minLength: { value: 2, message: "Minimaal 2 tekens" },
             })}
+            defaultValue={userData.whoAmI}
             label="Wie ben ik"
             placeholder="Vertel wat over jezelf"
           />
 
           <Button type="submit" fullWidth variant="fill">
-            Registreer
+            Opslaan
           </Button>
         </form>
+        <OtherWrapper invert={true}>
+          <p>Toch niet tevreden?</p>
+          <a onClick={() => router.push("/home")}>Wijzigingen annuleren</a>
+        </OtherWrapper>
       </FormWrapper>
       <Avatar>
         <Camera size={30} color="gray" />
@@ -190,4 +191,4 @@ export const FormWrapper = styled.div`
   }
 `;
 
-export default Register;
+export default MyData;

@@ -106,7 +106,6 @@ const Dropdown = ({
         ref={dropdown}
         type="button"
         onClick={() => {
-          console.log("test");
           setClicked(!clicked);
         }}
         onHoverStart={() => {
@@ -174,7 +173,7 @@ const DropdownContainer = styled.div`
   border: 1px solid #5f1d7d;
   color: #000;
   border: none;
-  position:relative;
+  position: relative;
   min-width: 100px;
   line-height: 1.75em;
   z-index: 10;
@@ -248,7 +247,7 @@ const OptionsContainer = styled(motion.ul)`
   margin: 0 0 0 0;
   position: relative;
   z-index: 10;
-  top:-4px;
+  top: -4px;
 `;
 
 const Option = styled(motion.li)`
@@ -265,7 +264,7 @@ const Option = styled(motion.li)`
   cursor: pointer;
 
   &:last-child {
-    border-bottom:none;
+    border-bottom: none;
   }
 `;
 

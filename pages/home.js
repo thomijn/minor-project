@@ -1,5 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { debounce } from "lodash";
+import { MessageSquare, ThumbsUp, Plus } from "react-feather";
+import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
+import dayjs from "dayjs";
+import "dayjs/locale/nl";
+
+dayjs.locale("nl");
+
 import { useBbox } from "../lib/hooks";
 import {
   TimelineWrapper,
@@ -17,11 +26,10 @@ import {
   FloatButton,
   EngagementWrapper,
 } from "../styles/homeStyles";
-import { debounce } from "lodash";
 import { HamburgerMenu } from "../components/HamburgerMenu";
-import { useRouter } from "next/dist/client/router";
-import { MessageSquare, ThumbsUp, Plus } from "react-feather";
 import AuthCheck from "../components/generic/AuthCheck";
+import { firestore, postToJSON } from "../lib/firebase";
+import HeartButton from "../components/generic/HeartButton";
 
 const optionsVariants = {
   selected: {
@@ -48,8 +56,11 @@ const indicatorVariants = {
 };
 
 const options = [
-  { name: "Variant 1", id: 1 },
-  { name: "Variant 2", id: 2 },
+  { name: "Alles" },
+  { name: "Activiteiten" },
+  { name: "Ervaringen" },
+  { name: "Verhalen" },
+  { name: "Anders" },
 ];
 
 const whoOptions = [
@@ -66,7 +77,7 @@ export default function Home(props) {
   const [bboxCard, ref2] = useBbox();
   const [bboxtimeLine, ref1] = useBbox();
   const [scrollHeight, setScrollHeight] = useState(0);
-  const [selected, setSelected] = useState(2);
+  const [selected, setSelected] = useState("Alles");
   const [whoSelected, setWhoSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
   const router = useRouter();
@@ -85,25 +96,32 @@ export default function Home(props) {
     );
   }, [isScrolling]);
 
+  const filteredPosts = posts.filter((post) => {
+    if (selected === "Alles") return post;
+    else return post.category === selected;
+  });
+
   useEffect(() => {
-    const number = Math.floor((scrollHeight + 80) / (bboxCard.height + 16) + 1);
-    if (number > 0 && number < 29) {
+    const number = Math.floor((scrollHeight + 80) / (260 + 16) + 1);
+
+    console.log(number);
+    if (number > 0 && number < 3) {
       setPhaseColor("hsl(45, 95%, 61%)");
       setPhase("Beginfase");
-    } else if (number > 29 && number < 49) {
+    } else if (number > 3 && number < 6) {
       setPhaseColor("hsl(45, 95%, 51%)");
       setPhase("Middenfase");
-    } else if (number > 49 && number < 69) {
+    } else if (number > 6 && number < 9) {
       setPhaseColor("hsl(45, 95%, 41%)");
       setPhase("Eindfase");
     }
 
     if (bboxtimeLine.height) {
       setIndicatorY(
-        Math.round(((scrollHeight + 80) / (206 * 100)) * bboxtimeLine.height)
+        Math.round(((scrollHeight + 80) / (10 * 260)) * bboxtimeLine.height)
       );
     }
-  }, [scrollHeight, bboxCard.height, bboxtimeLine.height]);
+  }, [scrollHeight, 260, bboxtimeLine.height]);
 
   return (
     <AuthCheck>
@@ -126,118 +144,100 @@ export default function Home(props) {
           ))}
         </WhoWrapper>
 
-        <OptionsWrapper>
-          {options.map((option) => (
-            <Option
-              initial={false}
-              key={option.id}
-              onClick={() => setSelected(option.id)}
-              animate={selected === option.id ? "selected" : "default"}
-              variants={optionsVariants}
-            >
-              {option.name}
-            </Option>
-          ))}
-        </OptionsWrapper>
+        <div
+          style={{
+            overflowX: "hidden",
+            width: "calc(100% + 48px)",
+            position: "relative",
+            left: -24,
+          }}
+        >
+          <OptionsWrapper dragConstraints={{ right: 0, left: -215 }} drag="x">
+            {options.map((option) => (
+              <Option
+                initial={false}
+                key={option.name}
+                onClick={() => setSelected(option.name)}
+                animate={selected === option.name ? "selected" : "default"}
+                variants={optionsVariants}
+              >
+                {option.name}
+              </Option>
+            ))}
+          </OptionsWrapper>
+        </div>
 
         <HamburgerMenu menu={true} toggleMenu={false} />
 
         <TimelineWrapper>
           <Col flex="1">
             <AnimatePresence exitBeforeEnter initial={false}>
-              {selected === 1 ? (
+              <div style={{ height: 260 * 10 }}>
                 <Timeline
+                  ref={ref1}
                   initial={{ x: -50 }}
                   exit={{ x: -50 }}
-                  key={1}
-                  versionOne
+                  key={2}
+                  versionTwo
                   animate={{ backgroundColor: phaseColor, x: 0 }}
                 >
                   <Indicator
+                    onPointerMove={(e) => {
+                      setScrolling(true);
+                    }}
                     variants={indicatorVariants}
-                    custom={{ color: phaseColor, indicatorY }}
+                    custom={{ color: phaseColor }}
                     animate={isScrolling ? "full" : "round"}
-                    style={{ x: -6, y: 70 }}
-                    versionOne
+                    style={{ x: -6, y: indicatorY }}
+                    versionTwo
                   >
                     <motion.span animate={{ opacity: isScrolling ? 1 : 0 }}>
                       {phase}
                     </motion.span>
                   </Indicator>
                 </Timeline>
-              ) : (
-                <div style={{ height: 100 * 206 }}>
-                  <Timeline
-                    ref={ref1}
-                    initial={{ x: -50 }}
-                    exit={{ x: -50 }}
-                    key={2}
-                    versionTwo
-                    animate={{ backgroundColor: phaseColor, x: 0 }}
-                  >
-                    <Indicator
-                      onPointerMove={(e) => {
-                        setScrolling(true);
-                        console.log(e);
-                      }}
-                      variants={indicatorVariants}
-                      custom={{ color: phaseColor }}
-                      animate={isScrolling ? "full" : "round"}
-                      style={{ x: -6, y: indicatorY }}
-                      versionTwo
-                    >
-                      <motion.span animate={{ opacity: isScrolling ? 1 : 0 }}>
-                        {phase}
-                      </motion.span>
-                    </Indicator>
-                  </Timeline>
-                </div>
+              </div>
               )}
             </AnimatePresence>
           </Col>
           <Col style={{ overflowX: "hidden" }} flex="30">
-            {posts.map((post) => (
-              <Card
-                onClick={() => router.push("/post/2")}
-                ref={ref2}
-                key={post.id}
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    gap: "16px",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <h2>
-                    {post.title}{" "}
-                    <TitleSpan>2 december 2021 | Alex - mantelzorger</TitleSpan>
-                  </h2>
+            {!filteredPosts.length ? (
+              <p>Geen berichten gevonden :(</p>
+            ) : (
+              filteredPosts.map((post) => (
+                <Card ref={ref2} key={post.id}>
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      gap: "16px",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <h2>
+                      {post.title}{" "}
+                      <TitleSpan>
+                        {dayjs(post.createdAt).format("D MMMM")} |{" "}
+                        {post.firstname}
+                      </TitleSpan>
+                    </h2>
 
-                  <Image />
-                </div>
-                <p>
-                  quia et suscipit suscipit recusandae consequuntur expedita et
-                  cum reprehenderit molestiae ut ut quas totam nostrum rerum est
-                  autem
-                </p>
-
-                <EngagementWrapper>
-                  <div>
-                    <ThumbsUp
-                      style={{ transform: "translateY(-1px)" }}
-                      size={20}
-                    />{" "}
-                    135
+                    <Image />
                   </div>
+                  <p>{post.message}</p>
+                  <Link href={`/${post.uid}/${post.slug}`}>Lees meer...</Link>
+                  <EngagementWrapper>
+                    <HeartButton post={post} />
 
-                  <div>
-                    <MessageSquare size={20} /> 20
-                  </div>
-                </EngagementWrapper>
-              </Card>
-            ))}
+                    <div
+                      onClick={() => router.push(`/${post.uid}/${post.slug}`)}
+                    >
+                      <MessageSquare size={20} /> {post.comments.length}
+                    </div>
+                  </EngagementWrapper>
+                </Card>
+              ))
+            )}
           </Col>
         </TimelineWrapper>
 
@@ -249,16 +249,15 @@ export default function Home(props) {
   );
 }
 
-export async function getStaticProps() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-  const res = await response.json();
+export async function getServerSideProps(context) {
+  const postsQuery = firestore
+    .collectionGroup("posts")
+    .where("published", "==", true)
+    .orderBy("createdAt", "desc");
 
-  const responsePhoto = await fetch(
-    "https://jsonplaceholder.typicode.com/photos"
-  );
-  const resPhoto = await responsePhoto.json();
+  const posts = (await postsQuery.get()).docs.map(postToJSON);
 
   return {
-    props: { posts: res, photos: resPhoto },
+    props: { posts }, // will be passed to the page component as props
   };
 }

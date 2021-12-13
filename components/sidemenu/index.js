@@ -2,9 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { auth } from "../../lib/firebase";
-
-import { useStore } from "../../store";
+import { useContext } from "react";
 import { useRouter } from "next/dist/client/router";
 import {
   Clock,
@@ -14,6 +12,10 @@ import {
   PlusCircle,
   Settings,
 } from "react-feather";
+
+import { auth } from "../../lib/firebase";
+import { useStore } from "../../store";
+import { UserContext } from "../../lib/context";
 
 const links = [
   { text: "Tijdlijn", url: "/home", icon: <Clock size={17} /> },
@@ -29,6 +31,7 @@ const links = [
 const SideMenu = () => {
   const { menu, toggleMenu } = useStore();
   const router = useRouter();
+  const userData = useContext(UserContext);
 
   useEffect(() => {
     setTimeout(() => {
@@ -46,9 +49,11 @@ const SideMenu = () => {
           transition={{ delay: menu ? 0.2 : 0 }}
           animate={{ opacity: menu ? 1 : 0 }}
         >
-          <PersonWrapper>
+          <PersonWrapper onClick={() => router.push("/mijn-gegevens")}>
             <Avatar />
-            <p>Hi John!</p>
+            <p>
+              {userData?.firstname} {userData?.lastname}
+            </p>
           </PersonWrapper>
           <hr style={{ margin: "16px 0px", width: "86%" }} />
 
@@ -76,7 +81,9 @@ const SideMenu = () => {
             <span
               onClick={() => {
                 auth.signOut();
-                router.push("/");
+                setTimeout(() => {
+                  router.push("/");
+                }, 200);
               }}
             >
               <LogOut color="#fbcb22" size={17} /> Uitloggen
