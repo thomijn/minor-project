@@ -100,7 +100,7 @@ const Post = (props) => {
           {post.category}
         </Option>
 
-        <p>{post.message}</p>
+        <p style={{ whiteSpace: "pre-wrap" }}>{post.message}</p>
 
         <Row style={{ marginTop: "16px", gap: 8 }}>
           <HeartButtonPost post={post} />

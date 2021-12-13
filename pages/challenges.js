@@ -24,6 +24,7 @@ import { useContext } from "react";
 import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import AuthCheck from "../components/generic/AuthCheck";
 
 const optionsVariants = {
   selected: {
@@ -50,8 +51,11 @@ const indicatorVariants = {
 };
 
 const options = [
-  { name: "Variant 1", id: 1 },
-  { name: "Variant 2", id: 2 },
+  { name: "Alles" },
+  { name: "Activiteiten" },
+  { name: "Binnen" },
+  { name: "Buiten" },
+  { name: "Knutselen" },
 ];
 
 export default function Challenges(props) {
@@ -61,7 +65,7 @@ export default function Challenges(props) {
   const [bboxCard, ref2] = useBbox();
   const [bboxtimeLine, ref1] = useBbox();
   const [scrollHeight, setScrollHeight] = useState(0);
-  const [selected, setSelected] = useState(2);
+  const [selected, setSelected] = useState("Alles");
   const [indicatorY, setIndicatorY] = useState(0);
   const userData = useContext(UserContext);
   const [realtimeChallenges] = useCollectionData(
@@ -130,72 +134,89 @@ export default function Challenges(props) {
 
   const challenges = realtimeChallenges ? realtimeChallenges : props.challenges;
 
+  const filteredChallenges = challenges.filter((challenge) => {
+    if (selected === "Alles") return challenge;
+    else return challenge.category === selected;
+  });
+
   return (
-    <Wrapper>
-      <h1>Challenges</h1>
+    <AuthCheck>
+      <Wrapper>
+        <h1 style={{ marginBottom: 32 }}>Challenges</h1>
 
-      <OptionsWrapper>
-        {options.map((option) => (
-          <Option
-            key={option.id}
-            onClick={() => setSelected(option.id)}
-            animate={selected === option.id ? "selected" : "default"}
-            variants={optionsVariants}
-          >
-            {option.name}
-          </Option>
-        ))}
-      </OptionsWrapper>
+        <div
+          style={{
+            overflowX: "hidden",
+            width: "calc(100% + 48px)",
+            position: "relative",
+            left: -24,
+          }}
+        >
+          <OptionsWrapper dragConstraints={{ right: 0, left: -215 }} drag="x">
+            {options.map((option) => (
+              <Option
+                initial={false}
+                key={option.name}
+                onClick={() => setSelected(option.name)}
+                animate={selected === option.name ? "selected" : "default"}
+                variants={optionsVariants}
+              >
+                {option.name}
+              </Option>
+            ))}
+          </OptionsWrapper>
+        </div>
 
-      <HamburgerMenu menu={true} toggleMenu={false} />
+        <HamburgerMenu menu={true} toggleMenu={false} />
 
-      <Col style={{ overflowX: "hidden" }} flex="30">
-        {challenges.map((challenge) => (
-          <Card fill ref={ref2} key={challenge.id}>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                gap: "16px",
-
-                justifyContent: "space-between",
-              }}
-            >
-              <h2 style={{ marginBottom: 8 }}>{challenge.title} </h2>
-            </div>
-            <p
-              style={{
-                WebkitLineClamp: 100,
-              }}
-            >
-              {challenge.description}
-            </p>
-            <Row
-              style={{
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <CardAction onClick={() => handleParticipate(challenge)}>
-                {challenge?.participants.includes(userData.user.uid)
-                  ? "Niet meer deelnemen"
-                  : "Doe mee!"}
-              </CardAction>
-              <Row
+        <Col style={{ overflowX: "hidden" }}>
+          {filteredChallenges.map((challenge) => (
+            <Card fill ref={ref2} key={challenge.id}>
+              <div
                 style={{
-                  color: "#faca3b",
-                  gap: 4,
-                  alignItems: "flex-start",
+                  width: "100%",
+                  display: "flex",
+                  gap: "16px",
+
                   justifyContent: "space-between",
                 }}
               >
-                <User size={20} /> {challenge.participants.length}
+                <h2 style={{ marginBottom: 8 }}>{challenge.title} </h2>
+              </div>
+              <p
+                style={{
+                  WebkitLineClamp: 100,
+                }}
+              >
+                {challenge.description}
+              </p>
+              <Row
+                style={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <CardAction onClick={() => handleParticipate(challenge)}>
+                  {challenge?.participants.includes(userData?.user?.uid)
+                    ? "Niet meer deelnemen"
+                    : "Doe mee!"}
+                </CardAction>
+                <Row
+                  style={{
+                    color: "#faca3b",
+                    gap: 4,
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <User size={20} /> {challenge.participants.length}
+                </Row>
               </Row>
-            </Row>
-          </Card>
-        ))}
-      </Col>
-    </Wrapper>
+            </Card>
+          ))}
+        </Col>
+      </Wrapper>
+    </AuthCheck>
   );
 }
 

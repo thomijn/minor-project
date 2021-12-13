@@ -104,7 +104,6 @@ export default function Home(props) {
   useEffect(() => {
     const number = Math.floor((scrollHeight + 80) / (260 + 16) + 1);
 
-    console.log(number);
     if (number > 0 && number < 3) {
       setPhaseColor("hsl(45, 95%, 61%)");
       setPhase("Beginfase");
@@ -116,12 +115,10 @@ export default function Home(props) {
       setPhase("Eindfase");
     }
 
-    if (bboxtimeLine.height) {
-      setIndicatorY(
-        Math.round(((scrollHeight + 80) / (10 * 260)) * bboxtimeLine.height)
-      );
+    if (600) {
+      setIndicatorY(Math.round(((scrollHeight + 80) / (10 * 260)) * 600));
     }
-  }, [scrollHeight, 260, bboxtimeLine.height]);
+  }, [scrollHeight, bboxtimeLine]);
 
   return (
     <AuthCheck>
@@ -175,9 +172,6 @@ export default function Home(props) {
               <div style={{ height: 260 * 10 }}>
                 <Timeline
                   ref={ref1}
-                  initial={{ x: -50 }}
-                  exit={{ x: -50 }}
-                  key={2}
                   versionTwo
                   animate={{ backgroundColor: phaseColor, x: 0 }}
                 >
@@ -197,7 +191,6 @@ export default function Home(props) {
                   </Indicator>
                 </Timeline>
               </div>
-              )}
             </AnimatePresence>
           </Col>
           <Col style={{ overflowX: "hidden" }} flex="30">
