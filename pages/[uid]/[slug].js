@@ -5,7 +5,7 @@ import { useDocumentData } from "react-firebase-hooks/firestore";
 
 import { HamburgerMenu } from "../../components/HamburgerMenu";
 import { auth, firestore, getUserDoc, postToJSON } from "../../lib/firebase";
-import { GoBack, Option, Wrapper } from "../../styles/homeStyles";
+import { GoBack, Option, TitleSpan, Wrapper } from "../../styles/homeStyles";
 import HeartButtonPost from "../../components/generic/HeartButtonPost";
 import AuthCheck from "../../components/generic/AuthCheck";
 import { TextArea } from "../../components/generic/Input";
@@ -61,6 +61,8 @@ const Post = (props) => {
     }
   };
 
+  console.log(post.createdAt);
+
   const deleteComment = async (comment) => {
     try {
       postRef.update({
@@ -82,115 +84,126 @@ const Post = (props) => {
           <ChevronLeft size={20} /> Ga terug
         </GoBack>
 
-        <h1>{post.title}</h1>
+        <motion.h1 layoutId={post.title}>
+          {post.title}
+          <TitleSpan>
+            {dayjs(post.createdAt).format("D MMMM")} | {post.firstname}
+          </TitleSpan>
+        </motion.h1>
 
         {post.image && (
           <Block>
-            <img src={post.image} />
+            <motion.img layoutId={post.image} src={post.image} />
           </Block>
         )}
 
-        <div style={{ display: "flex", gap: 8 }}>
-          <Option
-            style={{
-              backgroundColor: "#faca3b",
-              color: "#5f1d7d",
-              borderColor: "#faca3b",
-              fontSize: "0.9rem",
-              padding: "4px 8px",
-              marginBottom: "16px",
-            }}
-          >
-            {post?.phase}
-          </Option>
-
-          <Option
-            style={{
-              backgroundColor: "#E2C7DD",
-              fontSize: "0.9rem",
-              padding: "4px 8px",
-              marginBottom: "16px",
-            }}
-          >
-            {post.category}
-          </Option>
-        </div>
-
-        <p style={{ whiteSpace: "pre-wrap" }}>{post.message}</p>
-
-        <Row style={{ marginTop: "16px", gap: 8 }}>
-          <HeartButtonPost post={post} />
-          <ActionButton onClick={() => setComment(!comment)}>
-            <MessageSquare size={20} /> {post.comments.length}
-          </ActionButton>
-        </Row>
-
-        {comment && (
-          <CommentWrapper initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <form onSubmit={handleSubmit(handleNewComment)}>
-              <TextArea
-                {...register("message", {
-                  required: { value: true, message: "Dit veld is verplicht" },
-                  minLength: { value: 6, message: "Minimaal 6 tekens" },
-                })}
-                placeholder="Reactie schrijven"
-              />
-              <Button type="submit" fullWidth variant="fill">
-                Reactie plaatsen
-              </Button>
-            </form>
-          </CommentWrapper>
-        )}
-
-        <CommentWrapper layout>
-          <Triangle />
-          <h3>Reacties</h3>
-
-          {!post.comments.length ? (
-            <p
-              onClick={() => setComment(true)}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div style={{ display: "flex", gap: 8 }}>
+            <Option
               style={{
-                color: "#fff",
-                marginTop: 32,
-                textDecoration: "underline",
-                textUnderlineOffset: 3,
+                backgroundColor: "#faca3b",
+                color: "#5f1d7d",
+                borderColor: "#faca3b",
+                fontSize: "0.9rem",
+                padding: "4px 8px",
+                marginBottom: "16px",
               }}
             >
-              Plaats de eerste reactie!
-            </p>
-          ) : (
-            post.comments.map((comment) => (
-              <Comment key={comment.id}>
-                <Row>
-                  <Col>
-                    <Avatar>
-                      <img src={comment?.userImage} />
-                    </Avatar>
-                  </Col>
-                  <Col>
-                    <h4>
-                      {comment.firstname} {comment.lastname}
-                    </h4>
-                    <span>
-                      {dayjs(comment.createdAt).format("DD/MM/HH:mm")}
-                    </span>
-                  </Col>
-                  {comment?.uid === userData?.user?.uid && (
-                    <Col
-                      onClick={() => deleteComment(comment)}
-                      style={{ marginLeft: "auto" }}
-                    >
-                      <Trash2 size={20} color="#5f1d7d" />
-                    </Col>
-                  )}
-                </Row>
-                <Row>
-                  <p>{comment.message}</p>
-                </Row>
-              </Comment>
-            ))
+              {post?.phase}
+            </Option>
+
+            <Option
+              style={{
+                backgroundColor: "#E2C7DD",
+                fontSize: "0.9rem",
+                padding: "4px 8px",
+                marginBottom: "16px",
+              }}
+            >
+              {post.category}
+            </Option>
+          </div>
+
+          <p style={{ whiteSpace: "pre-wrap" }}>{post.message}</p>
+
+          <Row style={{ marginTop: "16px", gap: 8 }}>
+            <HeartButtonPost post={post} />
+            <ActionButton onClick={() => setComment(!comment)}>
+              <MessageSquare size={20} /> {post.comments.length}
+            </ActionButton>
+          </Row>
+
+          {comment && (
+            <CommentWrapper initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <form onSubmit={handleSubmit(handleNewComment)}>
+                <TextArea
+                  {...register("message", {
+                    required: { value: true, message: "Dit veld is verplicht" },
+                    minLength: { value: 6, message: "Minimaal 6 tekens" },
+                  })}
+                  placeholder="Reactie schrijven"
+                />
+                <Button type="submit" fullWidth variant="fill">
+                  Reactie plaatsen
+                </Button>
+              </form>
+            </CommentWrapper>
           )}
-        </CommentWrapper>
+
+          <CommentWrapper layout>
+            <Triangle />
+            <h3>Reacties</h3>
+
+            {!post.comments.length ? (
+              <p
+                onClick={() => setComment(true)}
+                style={{
+                  color: "#fff",
+                  marginTop: 32,
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                }}
+              >
+                Plaats de eerste reactie!
+              </p>
+            ) : (
+              post.comments.map((comment) => (
+                <Comment key={comment.id}>
+                  <Row>
+                    <Col>
+                      <Avatar>
+                        <img src={comment?.userImage} />
+                      </Avatar>
+                    </Col>
+                    <Col>
+                      <h4>
+                        {comment.firstname} {comment.lastname}
+                      </h4>
+                      <span>
+                        {dayjs(comment.createdAt).format("DD/MM/HH:mm")}
+                      </span>
+                    </Col>
+                    {comment?.uid === userData?.user?.uid && (
+                      <Col
+                        onClick={() => deleteComment(comment)}
+                        style={{ marginLeft: "auto" }}
+                      >
+                        <Trash2 size={20} color="#5f1d7d" />
+                      </Col>
+                    )}
+                  </Row>
+                  <Row>
+                    <p>{comment.message}</p>
+                  </Row>
+                </Comment>
+              ))
+            )}
+          </CommentWrapper>
+        </motion.div>
       </Wrapper>
     </AuthCheck>
   );
@@ -238,16 +251,14 @@ export const Block = styled.div`
   position: relative;
   height: 200px;
   margin: 48px 0px;
-  background-color: #f2f2f2;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 
-  image {
+  img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 `;
 

@@ -37,7 +37,6 @@ export const Card = styled.div`
   border-radius: 10px;
   padding: 14px;
   max-width: 100%;
-  overflow: hidden;
   margin-bottom: 16px;
   /* height: 250px; */
   display: flex;

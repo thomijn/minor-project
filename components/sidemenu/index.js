@@ -34,6 +34,14 @@ const SideMenu = () => {
   const userData = useContext(UserContext);
 
   useEffect(() => {
+    if (menu) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
+  }, [menu]);
+
+  useEffect(() => {
     setTimeout(() => {
       toggleMenu(false);
     }, 0);
@@ -100,6 +108,7 @@ const SideMenu = () => {
       <AnimatePresence>
         {menu && (
           <Overlay
+            onClick={() => toggleMenu(false)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
             exit={{ opacity: 0 }}
@@ -139,8 +148,8 @@ export const Overlay = styled(motion.div)`
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #fff;
-  opacity: 0.5;
+  background-color: #c5c5c5;
+  opacity: 0.6;
   z-index: 11;
 `;
 

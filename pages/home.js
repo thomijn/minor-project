@@ -38,6 +38,7 @@ import { firestore, postToJSON } from "../lib/firebase";
 import HeartButton from "../components/generic/HeartButton";
 import FilterModal from "../components/generic/FilterModal";
 import styled from "styled-components";
+import SortModal from "../components/generic/SortModal";
 
 const optionsVariants = {
   selected: {
@@ -89,7 +90,9 @@ export default function Home(props) {
   const [whoSelected, setWhoSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
   const [sortOn, setSortOn] = useState();
+  const [filterOn, setFilterOn] = useState([]);
   const [sortModal, setSortModal] = useState();
+  const [filterModal, setFilterModal] = useState();
   const router = useRouter();
 
   useEffect(() => {
@@ -135,45 +138,6 @@ export default function Home(props) {
       <Wrapper>
         <h1>Tijdlijn</h1>
 
-        {/* <WhoWrapper>
-          {whoOptions.map((option) => (
-            <WhoOption
-              initial={false}
-              key={option.id}
-              onClick={() => setWhoSelected(option.id)}
-              animate={{
-                backgroundColor: whoSelected === option.id ? "#5f1d7d" : "#fff",
-                color: whoSelected === option.id ? "#fff" : "#818181",
-              }}
-            >
-              {option.name}
-            </WhoOption>
-          ))}
-        </WhoWrapper> */}
-
-        {/* <div
-          style={{
-            overflowX: "hidden",
-            width: "calc(100% + 48px)",
-            position: "relative",
-            left: -24,
-          }}
-        >
-          <OptionsWrapper dragConstraints={{ right: 0, left: -215 }} drag="x">
-            {options.map((option) => (
-              <Option
-                initial={false}
-                key={option.name}
-                onClick={() => setSelected(option.name)}
-                animate={selected === option.name ? "selected" : "default"}
-                variants={optionsVariants}
-              >
-                {option.name}
-              </Option>
-            ))}
-          </OptionsWrapper>
-        </div> */}
-
         <div
           style={{
             fontSize: "0.95rem",
@@ -186,6 +150,7 @@ export default function Home(props) {
           }}
         >
           <div
+            onClick={() => setFilterModal(true)}
             style={{
               display: "flex",
               gap: 8,
@@ -249,29 +214,28 @@ export default function Home(props) {
                       justifyContent: "space-between",
                     }}
                   >
-                    <h2>
+                    <motion.h2
+                      transition={{ duration: 0 }}
+                      layoutId={post.title}
+                    >
                       {post.title}{" "}
                       <TitleSpan>
                         {dayjs(post.createdAt).format("D MMMM")} |{" "}
                         {post.firstname}
                       </TitleSpan>
-                    </h2>
+                    </motion.h2>
 
                     <Image>
-                      <img src={post?.userImage} />
+                      <motion.img src={post?.userImage} />
                     </Image>
                   </div>
 
                   {post.image && (
-                    <div
-                      style={{
-                        width: "calc(100% + 32px)",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <PostImage src={post.image} />
-                    </div>
+                    <PostImage
+                      transition={{ duration: 0 }}
+                      layoutId={post.image}
+                      src={post.image}
+                    />
                   )}
 
                   <p>{post.message}</p>
@@ -298,7 +262,7 @@ export default function Home(props) {
 
       <AnimatePresence>
         {sortModal && (
-          <FilterModal
+          <SortModal
             modalFunc={setSortModal}
             func={setSortOn}
             value={sortOn}
@@ -306,17 +270,27 @@ export default function Home(props) {
           />
         )}
       </AnimatePresence>
+
+      <AnimatePresence>
+        {filterModal && (
+          <FilterModal
+            modalFunc={setFilterModal}
+            func={setFilterOn}
+            value={filterOn}
+          />
+        )}
+      </AnimatePresence>
     </AuthCheck>
   );
 }
 
-const PostImage = styled.img`
+const PostImage = styled(motion.img)`
   margin-bottom: 32px;
-  left: -16px;
   width: 100%;
   position: relative;
   max-height: 200px;
   object-fit: cover;
+  border-radius: 6px;
 `;
 
 export async function getServerSideProps(context) {
