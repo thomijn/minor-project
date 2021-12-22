@@ -28,7 +28,7 @@ const contents = [
   },
 ];
 
-const onboard = () => {
+const Onboard = () => {
   const [step, setStep] = useState(0);
   const router = useRouter();
 
@@ -111,4 +111,4 @@ const Dot = styled(motion.div)`
   border: 2px solid #5f1d7d;
 `;
 
-export default onboard;
+export default Onboard;
