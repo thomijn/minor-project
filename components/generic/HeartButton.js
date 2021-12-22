@@ -53,7 +53,7 @@ const HeartButton = ({ post }) => {
       animate={{ backgroundColor: heartDoc?.exists() ? "#E1E1E1" : "#fff" }}
       onClick={() => (heartDoc?.exists() ? removeHeart() : addHeart())}
     >
-      <motion.div animate={animationControls}>
+      <motion.div initial={false} animate={animationControls}>
         <ThumbsUp
           strokeWidth={heartDoc?.exists() ? 2 : 2}
           style={{ transform: "translateY(-1px)" }}

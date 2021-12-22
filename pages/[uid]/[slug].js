@@ -255,7 +255,7 @@ export const CommentWrapper = styled(motion.div)`
   width: calc(100% + 48px);
   left: -24px;
   position: relative;
-  padding: 16px 24px;
+  padding: 16px 24px 32px 24px;
   margin: 16px 0px;
   background-color: #5f1d7d;
 

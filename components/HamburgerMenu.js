@@ -66,5 +66,5 @@ export const HamburgerWrapper = styled(motion.div)`
 
   position: ${(props) => (props.menu ? "fixed" : "absolute")};
   right: 24px;
-  top: 32px;
+  top: 24px;
 `;

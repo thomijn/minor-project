@@ -209,7 +209,7 @@ export default function Home(props) {
         <HamburgerMenu menu={true} toggleMenu={false} />
 
         <TimelineWrapper>
-          <Col flex="1">
+          {/* <Col flex="1">
             <AnimatePresence exitBeforeEnter initial={false}>
               <div style={{ height: 260 * 10 }}>
                 <Timeline
@@ -234,7 +234,7 @@ export default function Home(props) {
                 </Timeline>
               </div>
             </AnimatePresence>
-          </Col>
+          </Col> */}
           <Col style={{ overflowX: "hidden" }} flex="30">
             {!filteredPosts.length ? (
               <p>Geen berichten gevonden :(</p>
