@@ -28,6 +28,7 @@ const FilterModal = ({ options, value, func, modalFunc }) => {
         <div style={{ marginTop: 32 }}>
           {options.map((option) => (
             <Option
+              key={option}
               onClick={() => func(option)}
               initial={false}
               animate={{
