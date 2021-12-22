@@ -28,7 +28,7 @@ const MyData = () => {
     try {
       firestore
         .collection("users")
-        .doc(userData.user.uid)
+        .doc(userData?.user?.uid)
         .set(
           {
             ...data,
