@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import {
@@ -135,7 +135,7 @@ export default function Home(props) {
 
   return (
     <AuthCheck>
-      <Wrapper>
+      <Wrapper layoutScroll style={{ overflowY: "scroll" }}>
         <h1>Tijdlijn</h1>
 
         <div
@@ -200,59 +200,69 @@ export default function Home(props) {
               </div>
             </AnimatePresence>
           </Col> */}
-          <Col style={{ overflowX: "hidden" }} flex="30">
-            {!filteredPosts.length ? (
-              <p>Geen berichten gevonden :(</p>
-            ) : (
-              filteredPosts.map((post) => (
-                <Card ref={ref2} key={post.id}>
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      gap: "16px",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <motion.h2
-                      transition={{ duration: 0 }}
-                      layoutId={post.title}
-                    >
-                      {post.title}{" "}
-                      <TitleSpan>
-                        {dayjs(post.createdAt).format("D MMMM")} |{" "}
-                        {post.firstname}
-                      </TitleSpan>
-                    </motion.h2>
-
-                    <Image>
-                      <motion.img src={post?.userImage} />
-                    </Image>
-                  </div>
-
-                  {post.image && (
-                    <PostImage
-                      transition={{ duration: 0 }}
-                      layoutId={post.image}
-                      src={post.image}
-                    />
-                  )}
-
-                  <p>{post.message}</p>
-                  <Link href={`/${post.uid}/${post.slug}`}>Lees meer...</Link>
-                  <EngagementWrapper>
-                    <HeartButton post={post} />
-
+          <LayoutGroup>
+            <Col
+              layoutScroll
+              style={{ overflowX: "hidden", overflowY: "scroll" }}
+              flex="30"
+            >
+              {!filteredPosts.length ? (
+                <p>Geen berichten gevonden :(</p>
+              ) : (
+                filteredPosts.map((post) => (
+                  <Card ref={ref2} key={post.id}>
                     <div
-                      onClick={() => router.push(`/${post.uid}/${post.slug}`)}
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        gap: "16px",
+                        justifyContent: "space-between",
+                      }}
                     >
-                      <MessageSquare size={20} /> {post.comments.length}
+                      <motion.h2
+                        layoutScroll
+                        layout="position"
+                        transition={{ duration: 0 }}
+                        layoutId={post.title}
+                      >
+                        {post.title}{" "}
+                        <TitleSpan>
+                          {dayjs(post.createdAt).format("D MMMM")} |{" "}
+                          {post.firstname}
+                        </TitleSpan>
+                      </motion.h2>
+
+                      <Image>
+                        <motion.img src={post?.userImage} />
+                      </Image>
                     </div>
-                  </EngagementWrapper>
-                </Card>
-              ))
-            )}
-          </Col>
+
+                    {post.image && (
+                      <PostImage
+                        layoutScroll
+                        layout
+                        transition={{ duration: 0 }}
+                        layoutId={post.image}
+                        src={post.image}
+                      />
+                    )}
+
+                    <p>{post.message}</p>
+                    <Link href={`/${post.uid}/${post.slug}`}>Lees meer...</Link>
+                    <EngagementWrapper>
+                      <HeartButton post={post} />
+
+                      <div
+                        onClick={() => router.push(`/${post.uid}/${post.slug}`)}
+                      >
+                        <MessageSquare size={20} /> {post.comments.length}
+                      </div>
+                    </EngagementWrapper>
+                  </Card>
+                ))
+              )}
+            </Col>
+          </LayoutGroup>
         </TimelineWrapper>
 
         <FloatButton onClick={() => router.push("/nieuw")}>

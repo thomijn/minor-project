@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled(motion.div)`
   width: 100%;
   height: 100%;
   background-color: #fff;
@@ -134,7 +134,7 @@ export const TimelineWrapper = styled.div`
   z-index: 10;
 `;
 
-export const Col = styled.div`
+export const Col = styled(motion.div)`
   flex: ${(props) => props.flex};
 `;
 

@@ -61,8 +61,6 @@ const Post = (props) => {
     }
   };
 
-  console.log(post.createdAt);
-
   const deleteComment = async (comment) => {
     try {
       postRef.update({
@@ -84,7 +82,7 @@ const Post = (props) => {
           <ChevronLeft size={20} /> Ga terug
         </GoBack>
 
-        <motion.h1 layoutId={post.title}>
+        <motion.h1 layout="position" layoutId={post.title}>
           {post.title}
           <TitleSpan>
             {dayjs(post.createdAt).format("D MMMM")} | {post.firstname}
@@ -93,7 +91,7 @@ const Post = (props) => {
 
         {post.image && (
           <Block>
-            <motion.img layoutId={post.image} src={post.image} />
+            <motion.img layout layoutId={post.image} src={post.image} />
           </Block>
         )}
 
