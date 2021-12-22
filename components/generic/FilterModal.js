@@ -177,7 +177,7 @@ const FilterModal = ({ value, func, modalFunc }) => {
                 backgroundColor: value.includes("Foto's") ? "#C68EBC" : "#fff",
               }}
             />
-            Foto's
+            Foto&apos;s
           </Option>
         </div>
       </Wrapper>
