@@ -37,6 +37,7 @@ import AuthCheck from "../components/generic/AuthCheck";
 import { firestore, postToJSON } from "../lib/firebase";
 import HeartButton from "../components/generic/HeartButton";
 import FilterModal from "../components/generic/FilterModal";
+import styled from "styled-components";
 
 const optionsVariants = {
   selected: {
@@ -260,6 +261,19 @@ export default function Home(props) {
                       <img src={post?.userImage} />
                     </Image>
                   </div>
+
+                  {post.image && (
+                    <div
+                      style={{
+                        width: "calc(100% + 32px)",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <PostImage src={post.image} />
+                    </div>
+                  )}
+
                   <p>{post.message}</p>
                   <Link href={`/${post.uid}/${post.slug}`}>Lees meer...</Link>
                   <EngagementWrapper>
@@ -295,6 +309,15 @@ export default function Home(props) {
     </AuthCheck>
   );
 }
+
+const PostImage = styled.img`
+  margin-bottom: 32px;
+  left: -16px;
+  width: 100%;
+  position: relative;
+  max-height: 200px;
+  object-fit: cover;
+`;
 
 export async function getServerSideProps(context) {
   const postsQuery = firestore
