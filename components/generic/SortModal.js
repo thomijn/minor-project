@@ -34,7 +34,6 @@ const SortModal = ({ options, value, func, modalFunc }) => {
               initial={false}
               key={option}
               onClick={() => func(option)}
-              initial={false}
               animate={{
                 fontWeight: value === option ? "700" : "400",
                 backgroundColor: value === option ? "#f0f0f0" : "#fff",
