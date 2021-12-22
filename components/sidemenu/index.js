@@ -20,7 +20,7 @@ import { UserContext } from "../../lib/context";
 const links = [
   { text: "Tijdlijn", url: "/home", icon: <Clock size={17} /> },
   {
-    text: "Challenges",
+    text: "Activiteiten",
     url: "/challenges",
     icon: <Dribbble size={17} />,
   },
@@ -50,10 +50,10 @@ const SideMenu = () => {
           animate={{ opacity: menu ? 1 : 0 }}
         >
           <PersonWrapper onClick={() => router.push("/mijn-gegevens")}>
-            <Avatar />
-            <p>
-              {userData?.firstname} {userData?.lastname}
-            </p>
+            <Avatar>
+              <img src={userData?.userImage} />
+            </Avatar>
+            <p>{userData?.firstname}</p>
           </PersonWrapper>
           <hr style={{ margin: "16px 0px", width: "86%" }} />
 
@@ -75,8 +75,12 @@ const SideMenu = () => {
 
           <UnderWrapper>
             <hr />
-            <span>
-              <Settings color="#fbcb22" size={17} /> Instellingen
+            <span
+              onClick={() => {
+                router.push("/mijn-gegevens");
+              }}
+            >
+              <Settings color="#fbcb22" size={17} /> Profiel bewerken
             </span>
             <span
               onClick={() => {
@@ -115,6 +119,7 @@ export const SideMenuWrapper = styled(motion.div)`
   right: 0px;
   min-width: 250px;
   z-index: 12;
+  font-size: 1.1rem;
   font-size: 0.9rem;
 `;
 
@@ -125,6 +130,7 @@ export const PersonWrapper = styled(motion.div)`
   margin-top: 50px;
 
   p {
+    font-size: 1.1rem;
     color: #fff;
   }
 `;
@@ -141,9 +147,11 @@ export const Overlay = styled(motion.div)`
 export const UnderWrapper = styled(motion.div)`
   position: absolute;
   bottom: 162px;
-  width: 70%;
+  width: 100%;
 
   span {
+    display: inline-block;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -155,8 +163,21 @@ export const UnderWrapper = styled(motion.div)`
 export const Avatar = styled(motion.div)`
   width: 40px;
   height: 40px;
+  position: relative;
+  overflow: hidden;
   border-radius: 50%;
-  background-color: #e1e1e1;
+  border: 2px solid #5f1d7d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f2f2f2;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const LinksWrapper = styled(motion.div)`
@@ -168,6 +189,7 @@ export const LinksWrapper = styled(motion.div)`
   }
 
   li {
+    font-size: 1.1rem;
     position: relative;
     display: flex;
     align-items: center;
@@ -176,7 +198,7 @@ export const LinksWrapper = styled(motion.div)`
 
   a {
     color: #fff;
-    font-size: 1rem;
+
     cursor: pointer;
     text-decoration: none;
   }

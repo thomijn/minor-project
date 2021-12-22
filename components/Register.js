@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import styled from "styled-components";
 import Dropdown from "./generic/Dropdown";
-import Input from "./generic/Input";
+import Input, { TextArea, StyledLabel } from "./generic/Input";
 import Button from "./generic/Button";
 import { useRouter } from "next/dist/client/router";
 import { Camera } from "react-feather";
@@ -9,10 +9,13 @@ import { useForm } from "react-hook-form";
 import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
 import { firestore } from "../lib/firebase";
+import ImageUploader from "./generic/ImageUploader";
 
 const Register = () => {
   const [iAm, setIAm] = useState("Mantelzorger, case manager ...");
   const [iCare, setICare] = useState("Mijn vader, mijn moeder ...");
+  const [phase, setPhase] = useState("Middenfase");
+  const [stepOne, setStepOne] = useState(true);
   const { register, handleSubmit } = useForm();
   const { user } = useContext(UserContext);
 
@@ -24,11 +27,14 @@ const Register = () => {
       firestore
         .collection("users")
         .doc(user.uid)
-        .set({
-          ...data,
-          iAm,
-          iCare,
-        });
+        .set(
+          {
+            ...data,
+            iAm,
+            iCare,
+          },
+          { merge: true }
+        );
       router.push("/home");
     } catch (error) {
       console.log(error);
@@ -39,85 +45,129 @@ const Register = () => {
   return (
     <Wrapper>
       <Circle />
-      <h1>
-        Maak een <br /> account <br />
-        <Span>Vertel wat over uzelf</Span>
-      </h1>
 
-      <FormWrapper>
-        <form onSubmit={handleSubmit(handleRegister)}>
-          <Dropdown
-            label="Ik ben"
-            title={iAm}
-            setTitle={setIAm}
-            name="group"
-            items={["Mantelzorger", "Case manager"]}
-          />
-          <div style={{ marginBottom: 32 }}>
-            <Dropdown
-              label="Ik zorg voor"
-              title={iCare}
-              setTitle={setICare}
-              name="group"
-              items={["Vader", "Moeder", "Oma", "Opa", "Vriend", "Vriendin"]}
-            />
-          </div>
-          <Input
-            {...register("firstname", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Voornaam"
-            placeholder="Voornaam"
-          />
-          <Input
-            {...register("lastname", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Achternaam"
-            placeholder="Achternaam"
-          />
-          <Input
-            {...register("dateAlzheimer", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Datum vaststelling alzheimer"
-            placeholder="24-05-2010"
-          />
+      {stepOne ? (
+        <>
+          <h1>
+            Over uw <br /> account <br />
+            <Span>Voordat u aan de slag gaat</Span>
+          </h1>
 
-          <Input
-            {...register("hoursWeek", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Hoeveel uur per week"
-            placeholder="10 uur"
-          />
+          <Wrap>
+            <h2>Kopje een</h2>
+            <p>
+              Alzheimer is een progressieve ziekte. De ziekte neemt steeds
+              verder toe en beschadigt steeds meer hersencellen. Iemand met de
+              ziekte van Alzheimer of een andere vorm van dementie kan dingen
+              steeds minder goed onthouden en begrijpen.
+            </p>
 
-          <Input
-            {...register("whoAmI", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            label="Wie ben ik"
-            placeholder="Vertel wat over jezelf"
-          />
+            <h2>Kopje twee</h2>
+            <p>
+              Alzheimer is een progressieve ziekte. De ziekte neemt steeds
+              verder toe en beschadigt steeds meer hersencellen. Iemand met de
+              ziekte van Alzheimer of een andere vorm van dementie kan dingen
+              steeds minder goed onthouden en begrijpen.
+            </p>
 
-          <Button type="submit" fullWidth variant="fill">
-            Registreer
-          </Button>
-        </form>
-      </FormWrapper>
-      <Avatar>
-        <Camera size={30} color="gray" />
-      </Avatar>
+            <Button onClick={() => setStepOne(false)} fullWidth variant="fill">
+              Doorgaan
+            </Button>
+          </Wrap>
+        </>
+      ) : (
+        <>
+          <h1>
+            Maak een <br /> account <br />
+            <Span>Vertel wat over uzelf</Span>
+          </h1>
+          <FormWrapper>
+            <form onSubmit={handleSubmit(handleRegister)}>
+              <Input
+                style={{ marginBottom: -8 }}
+                {...register("firstname", {
+                  required: { value: true, message: "Dit veld is verplicht" },
+                  maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                  minLength: { value: 2, message: "Minimaal 2 tekens" },
+                })}
+                label="Voornaam"
+                placeholder="Voornaam"
+              />
+              <Dropdown
+                label="Ik ben"
+                title={iAm}
+                setTitle={setIAm}
+                name="group"
+                items={["Mantelzorger", "Case manager"]}
+              />
+              <div style={{ marginBottom: 16, marginTop: 0 }}>
+                <Dropdown
+                  label="Ik zorg voor"
+                  title={iCare}
+                  setTitle={setICare}
+                  name="group"
+                  items={[
+                    "Vader",
+                    "Moeder",
+                    "Oma",
+                    "Opa",
+                    "Vriend",
+                    "Vriendin",
+                  ]}
+                />
+              </div>
+              <Input
+                {...register("hoursWeek", {
+                  required: { value: true, message: "Dit veld is verplicht" },
+                  maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                  minLength: { value: 2, message: "Minimaal 2 tekens" },
+                })}
+                label="Hoeveel uur per week"
+                placeholder="10 uur"
+              />
+
+              <div style={{ marginBottom: 16, marginTop: -16 }}>
+                <Dropdown
+                  info={
+                    <>
+                      <h4>Waarom vragen wij hiernaar?</h4>{" "}
+                      <p style={{ lineHeight: 1.4 }}>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Donec a lectus aliquam, finibus tellus vitae, posuere
+                        est. Proin a euismod urna. Vivamus commodo maximus dui,
+                        ac placerat tortor viverra in.
+                      </p>{" "}
+                    </>
+                  }
+                  label="Hij/zij zit in de"
+                  title={phase}
+                  setTitle={setPhase}
+                  name="fase"
+                  items={["Beginfase", "Middenfase", "Eindfase"]}
+                />
+              </div>
+
+              <StyledLabel>Over mij</StyledLabel>
+              <TextArea
+                style={{ marginTop: 0 }}
+                {...register("whoAmI", {
+                  required: { value: true, message: "Dit veld is verplicht" },
+                  maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                  minLength: { value: 2, message: "Minimaal 2 tekens" },
+                })}
+                label="Over mij"
+                placeholder="Vertel wat over jezelf"
+              />
+
+              <Button type="submit" fullWidth variant="fill">
+                Profiel compleet maken
+              </Button>
+            </form>
+          </FormWrapper>
+
+          <ImageUploader uid={user.uid} />
+        </>
+      )}
     </Wrapper>
   );
 };
@@ -174,6 +224,21 @@ export const Span = styled.div`
   font-size: 0.9rem;
   color: #fbcb22;
   z-index: 1;
+`;
+
+export const Wrap = styled.div`
+  padding: 24px;
+  position: relative;
+  top: 300px;
+
+  p {
+    margin-bottom: 32px;
+  }
+
+  h2 {
+    color: #5f1d7d;
+    margin-bottom: 8px;
+  }
 `;
 
 export const FormWrapper = styled.div`

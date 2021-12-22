@@ -6,17 +6,20 @@ import { Camera, ChevronLeft } from "react-feather";
 import { useRouter } from "next/dist/client/router";
 
 import Dropdown from "../components/generic/Dropdown";
-import Input from "../components/generic/Input";
+import Input, { StyledLabel, TextArea } from "../components/generic/Input";
 import Button from "../components/generic/Button";
 import { UserContext } from "../lib/context";
 import { firestore } from "../lib/firebase";
 import { GoBack } from "../styles/homeStyles";
 import { OtherWrapper } from "../styles/loginStyles";
+import ImageUploader from "../components/generic/ImageUploader";
 
 const MyData = () => {
   const userData = useContext(UserContext);
   const [iAm, setIAm] = useState(userData?.iAm);
   const [iCare, setICare] = useState(userData?.iCare);
+  const [phase, setPhase] = useState(userData?.phase);
+
   const { register, handleSubmit } = useForm();
 
   const router = useRouter();
@@ -31,6 +34,7 @@ const MyData = () => {
             ...data,
             iAm,
             iCare,
+            phase,
           },
           { merge: true }
         );
@@ -57,6 +61,17 @@ const MyData = () => {
 
       <FormWrapper>
         <form onSubmit={handleSubmit(handleEditProfile)}>
+          <Input
+            defaultValue={userData.firstname}
+            style={{ marginBottom: -8 }}
+            {...register("firstname", {
+              required: { value: true, message: "Dit veld is verplicht" },
+              maxLength: { value: 32, message: "Maximaal 32 tekens" },
+              minLength: { value: 2, message: "Minimaal 2 tekens" },
+            })}
+            label="Voornaam"
+            placeholder="Voornaam"
+          />
           <Dropdown
             label="Ik ben"
             title={iAm}
@@ -75,17 +90,6 @@ const MyData = () => {
           </div>
 
           <Input
-            {...register("dateAlzheimer", {
-              required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
-              minLength: { value: 2, message: "Minimaal 2 tekens" },
-            })}
-            defaultValue={userData.dateAlzheimer}
-            label="Datum vaststelling alzheimer"
-            placeholder="24-05-2010"
-          />
-
-          <Input
             {...register("hoursWeek", {
               required: { value: true, message: "Dit veld is verplicht" },
               maxLength: { value: 32, message: "Maximaal 32 tekens" },
@@ -96,14 +100,37 @@ const MyData = () => {
             placeholder="10 uur"
           />
 
-          <Input
+          <div style={{ marginBottom: 16, marginTop: -16 }}>
+            <Dropdown
+              info={
+                <>
+                  <h4>Waarom vragen wij hiernaar?</h4>{" "}
+                  <p style={{ lineHeight: 1.4 }}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Donec a lectus aliquam, finibus tellus vitae, posuere est.
+                    Proin a euismod urna. Vivamus commodo maximus dui, ac
+                    placerat tortor viverra in.
+                  </p>{" "}
+                </>
+              }
+              label="Hij/zij zit in de"
+              title={phase}
+              setTitle={setPhase}
+              name="fase"
+              items={["Beginfase", "Middenfase", "Eindfase"]}
+            />
+          </div>
+
+          <StyledLabel>Over mij</StyledLabel>
+          <TextArea
+            defaultValue={userData?.whoAmI}
+            style={{ marginTop: 0 }}
             {...register("whoAmI", {
               required: { value: true, message: "Dit veld is verplicht" },
               maxLength: { value: 32, message: "Maximaal 32 tekens" },
               minLength: { value: 2, message: "Minimaal 2 tekens" },
             })}
-            defaultValue={userData.whoAmI}
-            label="Wie ben ik"
+            label="Over mij"
             placeholder="Vertel wat over jezelf"
           />
 
@@ -116,9 +143,7 @@ const MyData = () => {
           <a onClick={() => router.push("/home")}>Wijzigingen annuleren</a>
         </OtherWrapper>
       </FormWrapper>
-      <Avatar>
-        <Camera size={30} color="gray" />
-      </Avatar>
+      <ImageUploader photo={userData?.userImage} />
     </Wrapper>
   );
 };

@@ -1,7 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
-import { MessageSquare, ThumbsUp, Plus } from "react-feather";
+import {
+  MessageSquare,
+  ThumbsUp,
+  Plus,
+  Filter,
+  ChevronDown,
+} from "react-feather";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -30,6 +36,7 @@ import { HamburgerMenu } from "../components/HamburgerMenu";
 import AuthCheck from "../components/generic/AuthCheck";
 import { firestore, postToJSON } from "../lib/firebase";
 import HeartButton from "../components/generic/HeartButton";
+import FilterModal from "../components/generic/FilterModal";
 
 const optionsVariants = {
   selected: {
@@ -80,6 +87,8 @@ export default function Home(props) {
   const [selected, setSelected] = useState("Alles");
   const [whoSelected, setWhoSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
+  const [sortOn, setSortOn] = useState();
+  const [sortModal, setSortModal] = useState();
   const router = useRouter();
 
   useEffect(() => {
@@ -125,7 +134,7 @@ export default function Home(props) {
       <Wrapper>
         <h1>Tijdlijn</h1>
 
-        <WhoWrapper>
+        {/* <WhoWrapper>
           {whoOptions.map((option) => (
             <WhoOption
               initial={false}
@@ -139,9 +148,9 @@ export default function Home(props) {
               {option.name}
             </WhoOption>
           ))}
-        </WhoWrapper>
+        </WhoWrapper> */}
 
-        <div
+        {/* <div
           style={{
             overflowX: "hidden",
             width: "calc(100% + 48px)",
@@ -162,6 +171,38 @@ export default function Home(props) {
               </Option>
             ))}
           </OptionsWrapper>
+        </div> */}
+
+        <div
+          style={{
+            fontSize: "0.95rem",
+            margin: "48px 0px 32px 0px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            color: "#5f1d7d",
+            fontWeight: "700",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+            }}
+          >
+            <Filter size={22} /> Filters
+          </div>
+          <div
+            onClick={() => setSortModal(true)}
+            style={{
+              gap: 8,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            Sorteren op <ChevronDown size={22} />
+          </div>
         </div>
 
         <HamburgerMenu menu={true} toggleMenu={false} />
@@ -215,7 +256,9 @@ export default function Home(props) {
                       </TitleSpan>
                     </h2>
 
-                    <Image />
+                    <Image>
+                      <img src={post?.userImage} />
+                    </Image>
                   </div>
                   <p>{post.message}</p>
                   <Link href={`/${post.uid}/${post.slug}`}>Lees meer...</Link>
@@ -235,9 +278,20 @@ export default function Home(props) {
         </TimelineWrapper>
 
         <FloatButton onClick={() => router.push("/nieuw")}>
-          <Plus strokeWidth={4} />
+          <Plus strokeWidth={4} size={28} />
         </FloatButton>
       </Wrapper>
+
+      <AnimatePresence>
+        {sortModal && (
+          <FilterModal
+            modalFunc={setSortModal}
+            func={setSortOn}
+            value={sortOn}
+            options={["Nieuw", "Fase", "Populariteit", "Reacties"]}
+          />
+        )}
+      </AnimatePresence>
     </AuthCheck>
   );
 }

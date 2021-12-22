@@ -109,11 +109,22 @@ export const TitleSpan = styled.span`
 `;
 
 export const Image = styled.div`
-  min-width: 40px;
+  width: 40px;
   height: 40px;
+  position: relative;
   border-radius: 50%;
   border: 2px solid #5f1d7d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #f2f2f2;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const TimelineWrapper = styled.div`
@@ -223,10 +234,10 @@ export const EngagementWrapper = styled(motion.div)`
 `;
 
 export const FloatButton = styled(motion.button)`
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background-color: #5f1d7d;
+  background-color: #faca3b;
   color: #fff;
   display: flex;
   align-items: center;

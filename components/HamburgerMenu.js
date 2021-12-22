@@ -12,7 +12,7 @@ export const HamburgerMenu = () => {
     >
       <motion.svg
         xmlns="http://www.w3.org/2000/svg"
-        animate={{ rotate: menu ? -45 : 0, scale: 0.8 }}
+        animate={{ rotate: menu ? -45 : 0, scale: 1 }}
         style={{
           width: "24px",
           height: "24px",
@@ -62,7 +62,7 @@ export const HamburgerWrapper = styled(motion.div)`
   cursor: pointer;
   background-color: ${(props) => (!props.menu ? "#5f1d7d" : "rgba(0,0,0,0)")};
   border-radius: 50%;
-  padding: 6px;
+  padding: 10px;
 
   position: ${(props) => (props.menu ? "fixed" : "absolute")};
   right: 24px;

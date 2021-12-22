@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { StyledLabel } from "./Input";
 import { ArrowDown, ChevronDown } from "react-feather";
+import Tooltip from "./Tooltip";
 
 const Dropdown = ({
   items,
@@ -12,6 +13,7 @@ const Dropdown = ({
   label,
   extraLabel,
   style,
+  info,
 }) => {
   const [clicked, setClicked] = useState(false);
   const [titleHovered, setTitleHovered] = useState(false);
@@ -87,15 +89,41 @@ const Dropdown = ({
 
   return (
     <DropdownContainer ref={dropdownContainer}>
+      {info && (
+        <Tooltip text={info}>
+          <div
+            style={{
+              width: 20,
+              height: 20,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "0.8rem",
+              backgroundColor: "#fff",
+              left: -10,
+              top: 25,
+              zIndex: 3,
+              position: "absolute",
+              borderRadius: "50%",
+              padding: 5,
+              border: "2px solid #5f1d7d",
+            }}
+          >
+            i
+          </div>
+        </Tooltip>
+      )}
       <StyledLabel
         style={{
           backgroundColor: "#fff",
           padding: "0px 4px",
           top: 20,
+          left: 20,
           position: "relative",
-          transform: "translateX(14px)",
           zIndex: 1,
+          display: "flex",
           width: "fit-content",
+          gap: 0,
         }}
       >
         {label} {extraLabel && <span>{extraLabel}</span>}

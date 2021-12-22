@@ -14,10 +14,14 @@ import { HamburgerMenu } from "../components/HamburgerMenu";
 import { GoBack, Wrapper } from "../styles/homeStyles";
 import { auth, firestore, serverTimestamp } from "../lib/firebase";
 import { UserContext } from "../lib/context";
+import ImageUploaderPost from "../components/generic/ImageUploaderPost";
 
 const NewPost = () => {
   const [who, setWho] = useState("Publiek");
   const [category, setCategory] = useState("Activiteiten");
+  const [phase, setPhase] = useState("Middenfase");
+  const [downloadURL, setDownloadURL] = useState(null);
+
   const router = useRouter();
   const { register, handleSubmit } = useForm();
   const userData = useContext(UserContext);
@@ -39,8 +43,10 @@ const NewPost = () => {
         ...formData,
         who,
         category,
+        phase,
+        image: downloadURL,
+        userImage: userData.userImage,
         firstname: userData.firstname,
-        lastname: userData.lastname,
         published: true,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -68,6 +74,7 @@ const NewPost = () => {
         <h1>
           Bericht <br /> plaatsen
         </h1>
+
         <form onSubmit={handleSubmit(handleNewPost)}>
           <div>
             <Dropdown
@@ -78,7 +85,8 @@ const NewPost = () => {
               items={["Publiek", "Vrienden", "Privé"]}
             />
           </div>
-          <div style={{ marginBottom: 32 }}>
+
+          <div>
             <Dropdown
               label="Categorie"
               title={category}
@@ -87,6 +95,21 @@ const NewPost = () => {
               items={["Activiteiten", "Ervaringen", "Verhalen", "Anders"]}
             />
           </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <Dropdown
+              label="Fase"
+              title={phase}
+              setTitle={setPhase}
+              name="fase"
+              items={["Beginfase", "Middenfase", "Eindfase"]}
+            />
+          </div>
+
+          <ImageUploaderPost
+            downloadURL={downloadURL}
+            setDownloadURL={setDownloadURL}
+          />
 
           <Input
             {...register("title", {

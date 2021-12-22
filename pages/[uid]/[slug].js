@@ -81,24 +81,40 @@ const Post = (props) => {
         <GoBack onClick={() => router.push("/home")}>
           <ChevronLeft size={20} /> Ga terug
         </GoBack>
-        <HamburgerMenu menu={true} toggleMenu={false} />
 
         <h1>{post.title}</h1>
 
-        <Block>
-          <Camera size={40} color="#818181" />
-        </Block>
+        {post.image && (
+          <Block>
+            <img src={post.image} />
+          </Block>
+        )}
 
-        <Option
-          style={{
-            backgroundColor: "#E2C7DD",
-            fontSize: "0.9rem",
-            padding: "4px 8px",
-            marginBottom: "16px",
-          }}
-        >
-          {post.category}
-        </Option>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Option
+            style={{
+              backgroundColor: "#faca3b",
+              color: "#5f1d7d",
+              borderColor: "#faca3b",
+              fontSize: "0.9rem",
+              padding: "4px 8px",
+              marginBottom: "16px",
+            }}
+          >
+            {post?.phase}
+          </Option>
+
+          <Option
+            style={{
+              backgroundColor: "#E2C7DD",
+              fontSize: "0.9rem",
+              padding: "4px 8px",
+              marginBottom: "16px",
+            }}
+          >
+            {post.category}
+          </Option>
+        </div>
 
         <p style={{ whiteSpace: "pre-wrap" }}>{post.message}</p>
 
@@ -218,12 +234,19 @@ export const Block = styled.div`
   width: calc(100% + 48px);
   left: -24px;
   position: relative;
-  height: 175px;
-  margin: 16px 0px;
+  height: 200px;
+  margin: 48px 0px;
   background-color: #f2f2f2;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+
+  image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 `;
 
 export const CommentWrapper = styled(motion.div)`

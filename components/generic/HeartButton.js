@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { useEffect } from "react";
 import { ThumbsUp } from "react-feather";
 import { useDocument, useDocumentData } from "react-firebase-hooks/firestore";
 import { auth, firestore, increment } from "../../lib/firebase";
@@ -35,6 +36,15 @@ const HeartButton = ({ post }) => {
   };
 
   const likes = realTimePostData ? realTimePostData?.likeCount : post.likeCount;
+  const animationControls = useAnimation();
+
+  useEffect(() => {
+    heartDoc?.exists() &&
+      animationControls.start({
+        y: [0, -5, 2, 0],
+        transition: { type: "spring", duration: 0.4 },
+      });
+  }, [heartDoc]);
 
   return (
     <motion.div
@@ -43,12 +53,23 @@ const HeartButton = ({ post }) => {
       animate={{ backgroundColor: heartDoc?.exists() ? "#E1E1E1" : "#fff" }}
       onClick={() => (heartDoc?.exists() ? removeHeart() : addHeart())}
     >
-      <ThumbsUp
-        strokeWidth={heartDoc?.exists() ? 3 : 2}
-        style={{ transform: "translateY(-1px)" }}
-        size={20}
-      />{" "}
-      {likes}
+      <motion.div animate={animationControls}>
+        <ThumbsUp
+          strokeWidth={heartDoc?.exists() ? 2 : 2}
+          style={{ transform: "translateY(-1px)" }}
+          size={20}
+        />
+      </motion.div>
+      <AnimatePresence exitBeforeEnter>
+        <motion.div
+          initial={{ y: 5 }}
+          animate={{ y: 0 }}
+          exit={{ y: -5 }}
+          key={likes}
+        >
+          {likes}
+        </motion.div>
+      </AnimatePresence>
     </motion.div>
   );
 };
