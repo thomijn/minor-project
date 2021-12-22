@@ -4,7 +4,6 @@ import Dropdown from "./generic/Dropdown";
 import Input, { TextArea, StyledLabel } from "./generic/Input";
 import Button from "./generic/Button";
 import { useRouter } from "next/dist/client/router";
-import { Camera } from "react-feather";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
@@ -15,7 +14,6 @@ const Register = () => {
   const [iAm, setIAm] = useState("Mantelzorger, case manager ...");
   const [iCare, setICare] = useState("Mijn vader, mijn moeder ...");
   const [phase, setPhase] = useState("Middenfase");
-  const [stepOne, setStepOne] = useState(true);
   const { register, handleSubmit } = useForm();
   const { user } = useContext(UserContext);
 
@@ -35,7 +33,7 @@ const Register = () => {
           },
           { merge: true }
         );
-      router.push("/home");
+      router.push("/onboard");
     } catch (error) {
       console.log(error);
       toast.error("Er is iets misgegaan");
@@ -46,128 +44,90 @@ const Register = () => {
     <Wrapper>
       <Circle />
 
-      {stepOne ? (
-        <>
-          <h1>
-            Over uw <br /> account <br />
-            <Span>Voordat u aan de slag gaat</Span>
-          </h1>
-
-          <Wrap>
-            <h2>Kopje een</h2>
-            <p>
-              Alzheimer is een progressieve ziekte. De ziekte neemt steeds
-              verder toe en beschadigt steeds meer hersencellen. Iemand met de
-              ziekte van Alzheimer of een andere vorm van dementie kan dingen
-              steeds minder goed onthouden en begrijpen.
-            </p>
-
-            <h2>Kopje twee</h2>
-            <p>
-              Alzheimer is een progressieve ziekte. De ziekte neemt steeds
-              verder toe en beschadigt steeds meer hersencellen. Iemand met de
-              ziekte van Alzheimer of een andere vorm van dementie kan dingen
-              steeds minder goed onthouden en begrijpen.
-            </p>
-
-            <Button onClick={() => setStepOne(false)} fullWidth variant="fill">
-              Doorgaan
-            </Button>
-          </Wrap>
-        </>
-      ) : (
-        <>
-          <h1>
-            Maak een <br /> account <br />
-            <Span>Vertel wat over uzelf</Span>
-          </h1>
-          <FormWrapper>
-            <form onSubmit={handleSubmit(handleRegister)}>
-              <Input
-                style={{ marginBottom: -8 }}
-                {...register("firstname", {
-                  required: { value: true, message: "Dit veld is verplicht" },
-                  maxLength: { value: 32, message: "Maximaal 32 tekens" },
-                  minLength: { value: 2, message: "Minimaal 2 tekens" },
-                })}
-                label="Voornaam"
-                placeholder="Voornaam"
-              />
+      <>
+        <h1>
+          Maak een <br /> account <br />
+          <Span>Vertel wat over uzelf</Span>
+        </h1>
+        <FormWrapper>
+          <form onSubmit={handleSubmit(handleRegister)}>
+            <Input
+              style={{ marginBottom: -8 }}
+              {...register("firstname", {
+                required: { value: true, message: "Dit veld is verplicht" },
+                maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                minLength: { value: 2, message: "Minimaal 2 tekens" },
+              })}
+              label="Voornaam"
+              placeholder="Voornaam"
+            />
+            <Dropdown
+              label="Ik ben"
+              title={iAm}
+              setTitle={setIAm}
+              name="group"
+              items={["Mantelzorger", "Case manager"]}
+            />
+            <div style={{ marginBottom: 16, marginTop: 0 }}>
               <Dropdown
-                label="Ik ben"
-                title={iAm}
-                setTitle={setIAm}
+                label="Ik zorg voor"
+                title={iCare}
+                setTitle={setICare}
                 name="group"
-                items={["Mantelzorger", "Case manager"]}
+                items={["Vader", "Moeder", "Oma", "Opa", "Vriend", "Vriendin"]}
               />
-              <div style={{ marginBottom: 16, marginTop: 0 }}>
-                <Dropdown
-                  label="Ik zorg voor"
-                  title={iCare}
-                  setTitle={setICare}
-                  name="group"
-                  items={[
-                    "Vader",
-                    "Moeder",
-                    "Oma",
-                    "Opa",
-                    "Vriend",
-                    "Vriendin",
-                  ]}
-                />
-              </div>
-              <Input
-                {...register("hoursWeek", {
-                  required: { value: true, message: "Dit veld is verplicht" },
-                  maxLength: { value: 32, message: "Maximaal 32 tekens" },
-                  minLength: { value: 2, message: "Minimaal 2 tekens" },
-                })}
-                label="Hoeveel uur per week"
-                placeholder="10 uur"
+            </div>
+            <Input
+              {...register("hoursWeek", {
+                required: { value: true, message: "Dit veld is verplicht" },
+                maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                minLength: { value: 2, message: "Minimaal 2 tekens" },
+              })}
+              label="Hoeveel uur per week"
+              placeholder="10 uur"
+            />
+
+            <div style={{ marginBottom: 16, marginTop: -16 }}>
+              <Dropdown
+                info={
+                  <>
+                    <h4>Waarom vragen wij hiernaar?</h4>{" "}
+                    <p style={{ lineHeight: 1.4 }}>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Donec a lectus aliquam, finibus tellus vitae, posuere est.
+                      Proin a euismod urna. Vivamus commodo maximus dui, ac
+                      placerat tortor viverra in.
+                    </p>{" "}
+                  </>
+                }
+                label="Hij/zij zit in de"
+                title={phase}
+                setTitle={setPhase}
+                name="fase"
+                items={["Beginfase", "Middenfase", "Eindfase"]}
               />
+            </div>
 
-              <div style={{ marginBottom: 16, marginTop: -16 }}>
-                <Dropdown
-                  info={
-                    <>
-                      <h4>Waarom vragen wij hiernaar?</h4>{" "}
-                      <p style={{ lineHeight: 1.4 }}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Donec a lectus aliquam, finibus tellus vitae, posuere
-                        est. Proin a euismod urna. Vivamus commodo maximus dui,
-                        ac placerat tortor viverra in.
-                      </p>{" "}
-                    </>
-                  }
-                  label="Hij/zij zit in de"
-                  title={phase}
-                  setTitle={setPhase}
-                  name="fase"
-                  items={["Beginfase", "Middenfase", "Eindfase"]}
-                />
-              </div>
+            <StyledLabel>Over mij</StyledLabel>
+            <TextArea
+              style={{ marginTop: 0 }}
+              {...register("whoAmI", {
+                required: { value: true, message: "Dit veld is verplicht" },
+                maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                minLength: { value: 2, message: "Minimaal 2 tekens" },
+              })}
+              label="Over mij"
+              placeholder="Vertel wat over jezelf"
+            />
 
-              <StyledLabel>Over mij</StyledLabel>
-              <TextArea
-                style={{ marginTop: 0 }}
-                {...register("whoAmI", {
-                  required: { value: true, message: "Dit veld is verplicht" },
-                  maxLength: { value: 32, message: "Maximaal 32 tekens" },
-                  minLength: { value: 2, message: "Minimaal 2 tekens" },
-                })}
-                label="Over mij"
-                placeholder="Vertel wat over jezelf"
-              />
+            <Button type="submit" fullWidth variant="fill">
+              Profiel compleet maken
+            </Button>
+          </form>
+        </FormWrapper>
 
-              <Button type="submit" fullWidth variant="fill">
-                Profiel compleet maken
-              </Button>
-            </form>
-          </FormWrapper>
-
-          <ImageUploader uid={user.uid} />
-        </>
-      )}
+        <ImageUploader uid={user.uid} />
+      </>
     </Wrapper>
   );
 };

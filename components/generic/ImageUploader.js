@@ -72,7 +72,7 @@ export default function ImageUploader({ photo, uid }) {
         onChange={uploadFile}
         accept="image/x-png,image/gif,image/jpeg"
       />
-      {uploading ? (
+      {!downloadURL && uploading ? (
         <Loader size={30} color="gray" />
       ) : (
         <Camera size={30} color="gray" />

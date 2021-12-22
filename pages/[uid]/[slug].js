@@ -48,8 +48,8 @@ const Post = (props) => {
           updatedAt: Date(),
           id: Date.now(),
           firstname: userData.firstname,
-          lastname: userData.lastname,
           uid: userData.user.uid,
+          userImage: userData?.userImage,
         }),
       });
 
@@ -163,7 +163,9 @@ const Post = (props) => {
               <Comment key={comment.id}>
                 <Row>
                   <Col>
-                    <Avatar />
+                    <Avatar>
+                      <img src={comment?.userImage} />
+                    </Avatar>
                   </Col>
                   <Col>
                     <h4>
@@ -301,9 +303,20 @@ export const Comment = styled.div`
 export const Avatar = styled.div`
   width: 40px;
   height: 40px;
-  background-color: #c4c4c4;
-  border: 2px solid #5f1d7d;
+  position: relative;
   border-radius: 50%;
+  border: 2px solid #5f1d7d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f2f2f2;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const Row = styled.div`
