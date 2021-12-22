@@ -2,6 +2,7 @@ import { useRouter } from "next/dist/client/router";
 import { Camera, ChevronLeft, MessageSquare, Trash2 } from "react-feather";
 import styled from "styled-components";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import Link from "next/link";
 
 import { HamburgerMenu } from "../../components/HamburgerMenu";
 import { auth, firestore, getUserDoc, postToJSON } from "../../lib/firebase";
@@ -78,9 +79,11 @@ const Post = (props) => {
   return (
     <AuthCheck>
       <Wrapper>
-        <GoBack onClick={() => router.push("/home")}>
-          <ChevronLeft size={20} /> Ga terug
-        </GoBack>
+        <Link scroll={false} href="/home">
+          <GoBack>
+            <ChevronLeft size={20} /> Ga terug
+          </GoBack>
+        </Link>
 
         <motion.h1 layout="position" layoutId={post.title}>
           {post.title}
