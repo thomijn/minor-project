@@ -15,8 +15,6 @@ export default function ImageUploader({ photo, uid }) {
     hiddenFileInput.current.click();
   };
 
-  console.log(auth.currentUser.uid);
-
   // Creates a Firebase Upload Task
   const uploadFile = async (e) => {
     // Get the file
