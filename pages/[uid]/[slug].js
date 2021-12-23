@@ -10,7 +10,7 @@ import { GoBack, Option, TitleSpan, Wrapper } from "../../styles/homeStyles";
 import HeartButtonPost from "../../components/generic/HeartButtonPost";
 import AuthCheck from "../../components/generic/AuthCheck";
 import { TextArea } from "../../components/generic/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import Button from "../../components/generic/Button";
@@ -20,6 +20,7 @@ import { UserContext } from "../../lib/context";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
 import dayjs from "dayjs";
 import "dayjs/locale/nl";
+import { useStore } from "../../store";
 
 dayjs.locale("nl");
 
@@ -28,6 +29,7 @@ const Post = (props) => {
   const router = useRouter();
   const { register, handleSubmit } = useForm();
   const userData = useContext(UserContext);
+  const { setId } = useStore();
 
   const { slug, uid } = router.query;
 
@@ -37,6 +39,10 @@ const Post = (props) => {
     .collection("posts")
     .doc(slug);
   const [realtimePost] = useDocumentData(postRef);
+
+  useEffect(() => {
+    setId(slug);
+  }, []);
 
   const post = realtimePost || props.post;
 

@@ -1,13 +1,7 @@
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
-import {
-  MessageSquare,
-  ThumbsUp,
-  Plus,
-  Filter,
-  ChevronDown,
-} from "react-feather";
+import { MessageSquare, Plus, Filter, ChevronDown } from "react-feather";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -39,6 +33,7 @@ import HeartButton from "../components/generic/HeartButton";
 import FilterModal from "../components/generic/FilterModal";
 import styled from "styled-components";
 import SortModal from "../components/generic/SortModal";
+import { useStore } from "../store";
 
 const optionsVariants = {
   selected: {
@@ -94,6 +89,7 @@ export default function Home(props) {
   const [sortModal, setSortModal] = useState();
   const [filterModal, setFilterModal] = useState();
   const router = useRouter();
+  const { id } = useStore();
 
   useEffect(() => {
     window.addEventListener("scroll", (e) => {
@@ -113,6 +109,18 @@ export default function Home(props) {
     if (selected === "Alles") return post;
     else return post.category === selected;
   });
+
+  useEffect(() => {
+    if (id) {
+      const element = document.getElementById(id);
+
+      if (element) {
+        element.scrollIntoView({
+          top: 100,
+        });
+      }
+    }
+  }, [id]);
 
   useEffect(() => {
     const number = Math.floor((scrollHeight + 80) / (260 + 16) + 1);
@@ -210,7 +218,7 @@ export default function Home(props) {
                 <p>Geen berichten gevonden :(</p>
               ) : (
                 filteredPosts.map((post) => (
-                  <Card ref={ref2} key={post.id}>
+                  <Card id={post.slug} ref={ref2} key={post.slug}>
                     <div
                       style={{
                         width: "100%",
@@ -220,9 +228,9 @@ export default function Home(props) {
                       }}
                     >
                       <motion.h2
+                        transition={{ duration: 0 }}
                         layoutScroll
                         layout="position"
-                        transition={{ duration: 0 }}
                         layoutId={post.title}
                       >
                         {post.title}{" "}
@@ -239,9 +247,9 @@ export default function Home(props) {
 
                     {post.image && (
                       <PostImage
+                        transition={{ duration: 0 }}
                         layoutScroll
                         layout
-                        transition={{ duration: 0 }}
                         layoutId={post.image}
                         src={post.image}
                       />
@@ -253,7 +261,9 @@ export default function Home(props) {
                       <HeartButton post={post} />
 
                       <div
-                        onClick={() => router.push(`/${post.uid}/${post.slug}`)}
+                        onClick={() => {
+                          router.push(`/${post.uid}/${post.slug}`);
+                        }}
                       >
                         <MessageSquare size={20} /> {post.comments.length}
                       </div>
