@@ -30,7 +30,7 @@ export const GoBack = styled(motion.p)`
   }
 `;
 
-export const Card = styled.div`
+export const Card = styled(motion.div)`
   background: #ffffff;
   border: 1px solid #d7d7d7;
   box-sizing: border-box;

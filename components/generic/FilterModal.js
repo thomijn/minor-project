@@ -3,12 +3,27 @@ import React from "react";
 import styled from "styled-components";
 
 const FilterModal = ({ value, func, modalFunc }) => {
-  const handleSelect = (val) => {
-    if (value.includes(val)) {
-      func(value.filter((v) => v !== val));
+  const handleSelectPhase = (val) => {
+    if (value.phase.includes(val)) {
+      const newPhases = value.phase.filter((v) => v !== val);
+      func({ ...value, phase: newPhases });
     } else {
-      console.log(val);
-      func([...value, val]);
+      func({
+        ...value,
+        phase: [...value.phase, val],
+      });
+    }
+  };
+
+  const handleSelectCategories = (val) => {
+    if (value.categories.includes(val)) {
+      const newCategories = value.categories.filter((v) => v !== val);
+      func({ ...value, categories: newCategories });
+    } else {
+      func({
+        ...value,
+        categories: [...value.categories, val],
+      });
     }
   };
 
@@ -40,17 +55,21 @@ const FilterModal = ({ value, func, modalFunc }) => {
           <h3>Fase</h3>
           <Option
             initial={false}
-            style={{ fontWeight: value.includes("Beginfase") ? "700" : "400" }}
-            animate={{
-              backgroundColor: value.includes("Beginfase") ? "#f0f0f0" : "#fff",
-              color: value.includes("Beginfase") ? "#5f1d7d" : "#595959",
+            style={{
+              fontWeight: value.phase.includes("Beginfase") ? "700" : "400",
             }}
-            onClick={() => handleSelect("Beginfase")}
+            animate={{
+              backgroundColor: value.phase.includes("Beginfase")
+                ? "#f0f0f0"
+                : "#fff",
+              color: value.phase.includes("Beginfase") ? "#5f1d7d" : "#595959",
+            }}
+            onClick={() => handleSelectPhase("Beginfase")}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Beginfase")
+                backgroundColor: value.phase.includes("Beginfase")
                   ? "#C68EBC"
                   : "#fff",
               }}
@@ -59,19 +78,21 @@ const FilterModal = ({ value, func, modalFunc }) => {
           </Option>
           <Option
             initial={false}
-            onClick={() => handleSelect("Middenfase")}
-            style={{ fontWeight: value.includes("Middenfase") ? "700" : "400" }}
+            onClick={() => handleSelectPhase("Middenfase")}
+            style={{
+              fontWeight: value.phase.includes("Middenfase") ? "700" : "400",
+            }}
             animate={{
-              backgroundColor: value.includes("Middenfase")
+              backgroundColor: value.phase.includes("Middenfase")
                 ? "#f0f0f0"
                 : "#fff",
-              color: value.includes("Middenfase") ? "#5f1d7d" : "#595959",
+              color: value.phase.includes("Middenfase") ? "#5f1d7d" : "#595959",
             }}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Middenfase")
+                backgroundColor: value.phase.includes("Middenfase")
                   ? "#C68EBC"
                   : "#fff",
               }}
@@ -80,17 +101,21 @@ const FilterModal = ({ value, func, modalFunc }) => {
           </Option>
           <Option
             initial={false}
-            onClick={() => handleSelect("Eindfase")}
-            style={{ fontWeight: value.includes("Eindfase") ? "700" : "400" }}
+            onClick={() => handleSelectPhase("Eindfase")}
+            style={{
+              fontWeight: value.phase.includes("Eindfase") ? "700" : "400",
+            }}
             animate={{
-              backgroundColor: value.includes("Eindfase") ? "#f0f0f0" : "#fff",
-              color: value.includes("Eindfase") ? "#5f1d7d" : "#595959",
+              backgroundColor: value.phase.includes("Eindfase")
+                ? "#f0f0f0"
+                : "#fff",
+              color: value.phase.includes("Eindfase") ? "#5f1d7d" : "#595959",
             }}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Eindfase")
+                backgroundColor: value.phase.includes("Eindfase")
                   ? "#C68EBC"
                   : "#fff",
               }}
@@ -101,21 +126,25 @@ const FilterModal = ({ value, func, modalFunc }) => {
           <h3 style={{ marginTop: 16 }}>Categorie</h3>
           <Option
             initial={false}
-            onClick={() => handleSelect("Activiteiten")}
+            onClick={() => handleSelectCategories("Activiteiten")}
             style={{
-              fontWeight: value.includes("Activiteiten") ? "700" : "400",
+              fontWeight: value.categories.includes("Activiteiten")
+                ? "700"
+                : "400",
             }}
             animate={{
-              backgroundColor: value.includes("Activiteiten")
+              backgroundColor: value.categories.includes("Activiteiten")
                 ? "#f0f0f0"
                 : "#fff",
-              color: value.includes("Activiteiten") ? "#5f1d7d" : "#595959",
+              color: value.categories.includes("Activiteiten")
+                ? "#5f1d7d"
+                : "#595959",
             }}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Activiteiten")
+                backgroundColor: value.categories.includes("Activiteiten")
                   ? "#C68EBC"
                   : "#fff",
               }}
@@ -124,19 +153,25 @@ const FilterModal = ({ value, func, modalFunc }) => {
           </Option>
           <Option
             initial={false}
-            onClick={() => handleSelect("Ervaringen")}
-            style={{ fontWeight: value.includes("Ervaringen") ? "700" : "400" }}
+            onClick={() => handleSelectCategories("Ervaringen")}
+            style={{
+              fontWeight: value.categories.includes("Ervaringen")
+                ? "700"
+                : "400",
+            }}
             animate={{
-              backgroundColor: value.includes("Ervaringen")
+              backgroundColor: value.categories.includes("Ervaringen")
                 ? "#f0f0f0"
                 : "#fff",
-              color: value.includes("Ervaringen") ? "#5f1d7d" : "#595959",
+              color: value.categories.includes("Ervaringen")
+                ? "#5f1d7d"
+                : "#595959",
             }}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Ervaringen")
+                backgroundColor: value.categories.includes("Ervaringen")
                   ? "#C68EBC"
                   : "#fff",
               }}
@@ -145,17 +180,23 @@ const FilterModal = ({ value, func, modalFunc }) => {
           </Option>
           <Option
             initial={false}
-            onClick={() => handleSelect("Verhalen")}
-            style={{ fontWeight: value.includes("Verhalen") ? "700" : "400" }}
+            onClick={() => handleSelectCategories("Verhalen")}
+            style={{
+              fontWeight: value.categories.includes("Verhalen") ? "700" : "400",
+            }}
             animate={{
-              backgroundColor: value.includes("Verhalen") ? "#f0f0f0" : "#fff",
-              color: value.includes("Verhalen") ? "#5f1d7d" : "#595959",
+              backgroundColor: value.categories.includes("Verhalen")
+                ? "#f0f0f0"
+                : "#fff",
+              color: value.categories.includes("Verhalen")
+                ? "#5f1d7d"
+                : "#595959",
             }}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Verhalen")
+                backgroundColor: value.categories.includes("Verhalen")
                   ? "#C68EBC"
                   : "#fff",
               }}
@@ -164,17 +205,25 @@ const FilterModal = ({ value, func, modalFunc }) => {
           </Option>
           <Option
             initial={false}
-            onClick={() => handleSelect("Foto's")}
-            style={{ fontWeight: value.includes("Foto's") ? "700" : "400" }}
+            onClick={() => handleSelectCategories("Foto's")}
+            style={{
+              fontWeight: value.categories.includes("Foto's") ? "700" : "400",
+            }}
             animate={{
-              backgroundColor: value.includes("Foto's") ? "#f0f0f0" : "#fff",
-              color: value.includes("Foto's") ? "#5f1d7d" : "#595959",
+              backgroundColor: value.categories.includes("Foto's")
+                ? "#f0f0f0"
+                : "#fff",
+              color: value.categories.includes("Foto's")
+                ? "#5f1d7d"
+                : "#595959",
             }}
           >
             <Dot
               initial={false}
               animate={{
-                backgroundColor: value.includes("Foto's") ? "#C68EBC" : "#fff",
+                backgroundColor: value.categories.includes("Foto's")
+                  ? "#C68EBC"
+                  : "#fff",
               }}
             />
             Foto&apos;s

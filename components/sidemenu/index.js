@@ -18,7 +18,7 @@ import { useStore } from "../../store";
 import { UserContext } from "../../lib/context";
 
 const links = [
-  { text: "Tijdlijn", url: "/home", icon: <Clock size={17} /> },
+  { text: "Overzicht", url: "/home", icon: <Clock size={17} /> },
   {
     text: "Activiteiten",
     url: "/challenges",
@@ -57,7 +57,7 @@ const SideMenu = () => {
           transition={{ delay: menu ? 0.2 : 0 }}
           animate={{ opacity: menu ? 1 : 0 }}
         >
-          <PersonWrapper onClick={() => router.push("/mijn-gegevens")}>
+          <PersonWrapper onClick={() => router.push("/dagboek")}>
             <Avatar>
               <img src={userData?.userImage} />
             </Avatar>
@@ -122,7 +122,7 @@ const SideMenu = () => {
 export const SideMenuWrapper = styled(motion.div)`
   position: fixed;
   height: 100%;
-  border-radius: 15px 0px 0px 15px;
+  border-radius: 15px 0px 0px 0px;
   background-color: #5f1d7d;
   padding: 32px 24px 24px 24px;
   right: 0px;

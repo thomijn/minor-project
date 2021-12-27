@@ -1,11 +1,12 @@
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { debounce } from "lodash";
-import { MessageSquare, Plus, Filter, ChevronDown } from "react-feather";
+import { useContext, useEffect, useRef, useState } from "react";
+import { debounce, filter, forEach } from "lodash";
+import { MessageSquare, Plus, Filter, ChevronDown, User } from "react-feather";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import dayjs from "dayjs";
 import "dayjs/locale/nl";
+import { arrayRemove, arrayUnion, doc } from "firebase/firestore";
 
 dayjs.locale("nl");
 
@@ -14,17 +15,12 @@ import {
   TimelineWrapper,
   Wrapper,
   Card,
-  Timeline,
   Col,
-  Indicator,
-  Option,
-  OptionsWrapper,
   Image,
   TitleSpan,
-  WhoWrapper,
-  WhoOption,
   FloatButton,
   EngagementWrapper,
+  CardAction,
 } from "../styles/homeStyles";
 import { HamburgerMenu } from "../components/HamburgerMenu";
 import AuthCheck from "../components/generic/AuthCheck";
@@ -34,47 +30,14 @@ import FilterModal from "../components/generic/FilterModal";
 import styled from "styled-components";
 import SortModal from "../components/generic/SortModal";
 import { useStore } from "../store";
-
-const optionsVariants = {
-  selected: {
-    backgroundColor: "#E2C7DD",
-  },
-  default: { backgroundColor: "#fff" },
-};
-
-const indicatorVariants = {
-  round: (custom) => ({
-    widh: 20,
-    height: 20,
-    backgroundColor: custom.color,
-    borderRadius: "50%",
-    y: custom.y,
-  }),
-  full: (custom) => ({
-    width: "140px",
-    height: "40px",
-    backgroundColor: custom.color,
-    borderRadius: "7px",
-    y: custom.y,
-  }),
-};
-
-const options = [
-  { name: "Alles" },
-  { name: "Activiteiten" },
-  { name: "Ervaringen" },
-  { name: "Verhalen" },
-  { name: "Anders" },
-];
-
-const whoOptions = [
-  { name: "publiek", id: 1 },
-  { name: "vrienden", id: 2 },
-  { name: "privé", id: 3 },
-];
+import { useRouterScroll } from "@moxy/next-router-scroll";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { Row } from "./[uid]/[slug]";
+import { UserContext } from "../lib/context";
+import toast from "react-hot-toast";
 
 export default function Home(props) {
-  const { posts } = props;
+  const { posts, challenges } = props;
   const [phaseColor, setPhaseColor] = useState("#faca3b");
   const [phase, setPhase] = useState("Beginfase");
   const [isScrolling, setScrolling] = useState(false);
@@ -84,12 +47,23 @@ export default function Home(props) {
   const [selected, setSelected] = useState("Alles");
   const [whoSelected, setWhoSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
-  const [sortOn, setSortOn] = useState();
-  const [filterOn, setFilterOn] = useState([]);
+  const [sortOn, setSortOn] = useState("Nieuw");
+  const [filterOn, setFilterOn] = useState({
+    phase: ["Beginfase", "Middenfase", "Eindfase"],
+    categories: ["Activiteiten", "Ervaringen", "Verhalen", "Foto's"],
+  });
   const [sortModal, setSortModal] = useState();
   const [filterModal, setFilterModal] = useState();
   const router = useRouter();
   const { id } = useStore();
+  const userData = useContext(UserContext);
+
+  const [realtimeChallenges] = useCollectionData(
+    firestore.collection("challenges"),
+    {
+      idField: "id",
+    }
+  );
 
   useEffect(() => {
     window.addEventListener("scroll", (e) => {
@@ -106,9 +80,15 @@ export default function Home(props) {
   }, [isScrolling]);
 
   const filteredPosts = posts.filter((post) => {
-    if (selected === "Alles") return post;
-    else return post.category === selected;
+    return (
+      filterOn.phase.includes(post.phase) &&
+      filterOn.categories.includes(post.category)
+    );
   });
+
+  filteredPosts.sort;
+
+  console.log(filteredPosts);
 
   useEffect(() => {
     if (id) {
@@ -141,10 +121,35 @@ export default function Home(props) {
     }
   }, [scrollHeight, bboxtimeLine]);
 
+  const handleParticipate = async (challenge) => {
+    const challengeRef = firestore.collection("challenges").doc(challenge.id);
+
+    const participate = challenge?.participants.includes(userData.user.uid);
+
+    try {
+      challengeRef.update({
+        participants: participate
+          ? arrayRemove(userData.user.uid)
+          : arrayUnion(userData.user.uid),
+      });
+
+      toast.success(
+        participate
+          ? "Je doet niet meer mee met de challenge"
+          : "Je doet mee met de challenge"
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error("Er is iets misgegaan");
+    }
+  };
+
+  const challengess = realtimeChallenges ? realtimeChallenges : challenges;
+
   return (
     <AuthCheck>
       <Wrapper layoutScroll style={{ overflowY: "scroll" }}>
-        <h1>Tijdlijn</h1>
+        <h1>Overzicht</h1>
 
         <div
           style={{
@@ -182,32 +187,6 @@ export default function Home(props) {
         <HamburgerMenu menu={true} toggleMenu={false} />
 
         <TimelineWrapper>
-          {/* <Col flex="1">
-            <AnimatePresence exitBeforeEnter initial={false}>
-              <div style={{ height: 260 * 10 }}>
-                <Timeline
-                  ref={ref1}
-                  versionTwo
-                  animate={{ backgroundColor: phaseColor, x: 0 }}
-                >
-                  <Indicator
-                    onPointerMove={(e) => {
-                      setScrolling(true);
-                    }}
-                    variants={indicatorVariants}
-                    custom={{ color: phaseColor }}
-                    animate={isScrolling ? "full" : "round"}
-                    style={{ x: -6, y: indicatorY }}
-                    versionTwo
-                  >
-                    <motion.span animate={{ opacity: isScrolling ? 1 : 0 }}>
-                      {phase}
-                    </motion.span>
-                  </Indicator>
-                </Timeline>
-              </div>
-            </AnimatePresence>
-          </Col> */}
           <LayoutGroup>
             <Col
               layoutScroll
@@ -217,59 +196,122 @@ export default function Home(props) {
               {!filteredPosts.length ? (
                 <p>Geen berichten gevonden :(</p>
               ) : (
-                filteredPosts.map((post) => (
-                  <Card id={post.slug} ref={ref2} key={post.slug}>
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        gap: "16px",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <motion.h2
-                        transition={{ duration: 0 }}
-                        layoutScroll
-                        layout="position"
-                        layoutId={post.title}
-                      >
-                        {post.title}{" "}
-                        <TitleSpan>
-                          {dayjs(post.createdAt).format("D MMMM")} |{" "}
-                          {post.firstname}
-                        </TitleSpan>
-                      </motion.h2>
+                filteredPosts.map((post, index) => {
+                  return (
+                    <>
+                      {index % 3 === 0 && index !== 0 && (
+                        <Card
+                          layout
+                          fill
+                          ref={ref2}
+                          key={challengess[index / 3].id}
+                        >
+                          <div
+                            style={{
+                              width: "100%",
+                              display: "flex",
+                              gap: "16px",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <h2 style={{ marginBottom: 8 }}>
+                              {challengess[index / 3].title}{" "}
+                            </h2>
+                          </div>
+                          <p
+                            style={{
+                              WebkitLineClamp: 100,
+                            }}
+                          >
+                            {challengess[index / 3].description}
+                          </p>
+                          <Row
+                            style={{
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <CardAction
+                              onClick={() =>
+                                handleParticipate(challengess[index / 3])
+                              }
+                            >
+                              {challengess[index / 3]?.participants.includes(
+                                userData?.user?.uid
+                              )
+                                ? "Niet meer deelnemen"
+                                : "Doe mee!"}
+                            </CardAction>
+                            <Row
+                              style={{
+                                color: "#faca3b",
+                                gap: 4,
+                                alignItems: "flex-start",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <User size={20} />{" "}
+                              {challengess[index / 3].participants.length}
+                            </Row>
+                          </Row>
+                        </Card>
+                      )}
+                      <Card layout id={post.slug} ref={ref2} key={post.slug}>
+                        <div
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            gap: "16px",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <motion.h2
+                            transition={{ duration: 0 }}
+                            layoutScroll
+                            layout="position"
+                            layoutId={post.title}
+                          >
+                            {post.title}{" "}
+                            <TitleSpan>
+                              {dayjs(post.createdAt).format("D MMMM")} |{" "}
+                              {post.firstname}
+                            </TitleSpan>
+                          </motion.h2>
 
-                      <Image>
-                        <motion.img src={post?.userImage} />
-                      </Image>
-                    </div>
+                          <Image>
+                            <motion.img src={post?.userImage} />
+                          </Image>
+                        </div>
 
-                    {post.image && (
-                      <PostImage
-                        transition={{ duration: 0 }}
-                        layoutScroll
-                        layout
-                        layoutId={post.image}
-                        src={post.image}
-                      />
-                    )}
+                        {post.image && (
+                          <PostImage
+                            transition={{ duration: 0 }}
+                            layoutScroll
+                            layout
+                            layoutId={post.image}
+                            src={post.image}
+                          />
+                        )}
 
-                    <p>{post.message}</p>
-                    <Link href={`/${post.uid}/${post.slug}`}>Lees meer...</Link>
-                    <EngagementWrapper>
-                      <HeartButton post={post} />
+                        <p>{post.message}</p>
+                        <Link href={`/${post.uid}/${post.slug}`}>
+                          Lees meer...
+                        </Link>
+                        <EngagementWrapper>
+                          <HeartButton post={post} />
 
-                      <div
-                        onClick={() => {
-                          router.push(`/${post.uid}/${post.slug}`);
-                        }}
-                      >
-                        <MessageSquare size={20} /> {post.comments.length}
-                      </div>
-                    </EngagementWrapper>
-                  </Card>
-                ))
+                          <div
+                            onClick={() => {
+                              router.push(`/${post.uid}/${post.slug}`);
+                            }}
+                          >
+                            <MessageSquare size={20} /> {post.comments.length}
+                          </div>
+                        </EngagementWrapper>
+                      </Card>
+                    </>
+                  );
+                })
               )}
             </Col>
           </LayoutGroup>
@@ -321,7 +363,16 @@ export async function getServerSideProps(context) {
 
   const posts = (await postsQuery.get()).docs.map(postToJSON);
 
+  const challengesQuery = firestore.collection("challenges");
+
+  const challenges = (await challengesQuery.get()).docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
+  });
+
   return {
-    props: { posts }, // will be passed to the page component as props
+    props: { posts, challenges }, // will be passed to the page component as props
   };
 }

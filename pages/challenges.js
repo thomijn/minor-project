@@ -1,25 +1,19 @@
-import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useBbox } from "../lib/hooks";
 import {
-  TimelineWrapper,
   Wrapper,
   Card,
-  Timeline,
   Col,
-  Indicator,
   Option,
   OptionsWrapper,
-  Image,
   CardAction,
-  TitleSpan,
 } from "../styles/homeStyles";
 import { debounce } from "lodash";
 import { HamburgerMenu } from "../components/HamburgerMenu";
 import { firestore, postToJSON } from "../lib/firebase";
 import { Row } from "./[uid]/[slug]";
 import { User } from "react-feather";
-import { arrayRemove, arrayUnion, doc } from "firebase/firestore";
+import { arrayRemove, arrayUnion } from "firebase/firestore";
 import { useContext } from "react";
 import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
