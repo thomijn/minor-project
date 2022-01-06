@@ -16,9 +16,7 @@ export default function App({ Component, pageProps, router }) {
         <GlobalStyle />
         <SideMenu />
         <Toaster />
-        <AnimatePresence exitBeforeEnter>
-          <Component {...pageProps} key={router.pathname} />
-        </AnimatePresence>
+        <Component {...pageProps} key={router.pathname} />
       </RouterScrollProvider>
     </UserContext.Provider>
   );
