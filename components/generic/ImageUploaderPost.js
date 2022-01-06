@@ -58,11 +58,23 @@ export default function ImageUploaderPost({ setDownloadURL, downloadURL }) {
       />
       <strong>
         {uploading
-          ? progress
+          ? `${progress}%`
           : downloadURL
           ? "foto is geupload"
           : "Foto uploaden"}
       </strong>
+      {downloadURL && (
+        <img
+          style={{
+            flex: "1",
+            borderRadius: 0,
+            borderRadius: 10,
+            marginTop: 8,
+            marginBottom: 8,
+          }}
+          src={downloadURL}
+        />
+      )}
     </Wrapper>
   );
 }
@@ -79,6 +91,7 @@ export const Wrapper = styled.div`
   left: 24px;
   top: 200px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 

@@ -2,7 +2,13 @@ import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
 
-const FilterModal = ({ value, func, modalFunc }) => {
+const FilterModal = ({
+  value,
+  func,
+  modalFunc,
+  noPhase,
+  categoriesOptions,
+}) => {
   const handleSelectPhase = (val) => {
     if (value.phase.includes(val)) {
       const newPhases = value.phase.filter((v) => v !== val);
@@ -52,182 +58,118 @@ const FilterModal = ({ value, func, modalFunc }) => {
         </div>
 
         <div style={{ marginTop: 32 }}>
-          <h3>Fase</h3>
-          <Option
-            initial={false}
-            style={{
-              fontWeight: value.phase.includes("Beginfase") ? "700" : "400",
-            }}
-            animate={{
-              backgroundColor: value.phase.includes("Beginfase")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.phase.includes("Beginfase") ? "#5f1d7d" : "#595959",
-            }}
-            onClick={() => handleSelectPhase("Beginfase")}
-          >
-            <Dot
-              initial={false}
-              animate={{
-                backgroundColor: value.phase.includes("Beginfase")
-                  ? "#C68EBC"
-                  : "#fff",
-              }}
-            />
-            Beginfase
-          </Option>
-          <Option
-            initial={false}
-            onClick={() => handleSelectPhase("Middenfase")}
-            style={{
-              fontWeight: value.phase.includes("Middenfase") ? "700" : "400",
-            }}
-            animate={{
-              backgroundColor: value.phase.includes("Middenfase")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.phase.includes("Middenfase") ? "#5f1d7d" : "#595959",
-            }}
-          >
-            <Dot
-              initial={false}
-              animate={{
-                backgroundColor: value.phase.includes("Middenfase")
-                  ? "#C68EBC"
-                  : "#fff",
-              }}
-            />
-            Middenfase
-          </Option>
-          <Option
-            initial={false}
-            onClick={() => handleSelectPhase("Eindfase")}
-            style={{
-              fontWeight: value.phase.includes("Eindfase") ? "700" : "400",
-            }}
-            animate={{
-              backgroundColor: value.phase.includes("Eindfase")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.phase.includes("Eindfase") ? "#5f1d7d" : "#595959",
-            }}
-          >
-            <Dot
-              initial={false}
-              animate={{
-                backgroundColor: value.phase.includes("Eindfase")
-                  ? "#C68EBC"
-                  : "#fff",
-              }}
-            />
-            Eindfase
-          </Option>
+          {!noPhase && (
+            <>
+              <h3>Fase</h3>
+              <Option
+                initial={false}
+                style={{
+                  fontWeight: value.phase.includes("Beginfase") ? "700" : "400",
+                }}
+                animate={{
+                  backgroundColor: value.phase.includes("Beginfase")
+                    ? "#f0f0f0"
+                    : "#fff",
+                  color: value.phase.includes("Beginfase")
+                    ? "#5f1d7d"
+                    : "#595959",
+                }}
+                onClick={() => handleSelectPhase("Beginfase")}
+              >
+                <Dot
+                  initial={false}
+                  animate={{
+                    backgroundColor: value.phase.includes("Beginfase")
+                      ? "#C68EBC"
+                      : "#fff",
+                  }}
+                />
+                Beginfase
+              </Option>
+              <Option
+                initial={false}
+                onClick={() => handleSelectPhase("Middenfase")}
+                style={{
+                  fontWeight: value.phase.includes("Middenfase")
+                    ? "700"
+                    : "400",
+                }}
+                animate={{
+                  backgroundColor: value.phase.includes("Middenfase")
+                    ? "#f0f0f0"
+                    : "#fff",
+                  color: value.phase.includes("Middenfase")
+                    ? "#5f1d7d"
+                    : "#595959",
+                }}
+              >
+                <Dot
+                  initial={false}
+                  animate={{
+                    backgroundColor: value.phase.includes("Middenfase")
+                      ? "#C68EBC"
+                      : "#fff",
+                  }}
+                />
+                Middenfase
+              </Option>
+              <Option
+                initial={false}
+                onClick={() => handleSelectPhase("Eindfase")}
+                style={{
+                  fontWeight: value.phase.includes("Eindfase") ? "700" : "400",
+                }}
+                animate={{
+                  backgroundColor: value.phase.includes("Eindfase")
+                    ? "#f0f0f0"
+                    : "#fff",
+                  color: value.phase.includes("Eindfase")
+                    ? "#5f1d7d"
+                    : "#595959",
+                }}
+              >
+                <Dot
+                  initial={false}
+                  animate={{
+                    backgroundColor: value.phase.includes("Eindfase")
+                      ? "#C68EBC"
+                      : "#fff",
+                  }}
+                />
+                Eindfase
+              </Option>
+            </>
+          )}
 
           <h3 style={{ marginTop: 16 }}>Categorie</h3>
-          <Option
-            initial={false}
-            onClick={() => handleSelectCategories("Activiteiten")}
-            style={{
-              fontWeight: value.categories.includes("Activiteiten")
-                ? "700"
-                : "400",
-            }}
-            animate={{
-              backgroundColor: value.categories.includes("Activiteiten")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.categories.includes("Activiteiten")
-                ? "#5f1d7d"
-                : "#595959",
-            }}
-          >
-            <Dot
+          {categoriesOptions.map((option) => (
+            <Option
+              key={option}
               initial={false}
-              animate={{
-                backgroundColor: value.categories.includes("Activiteiten")
-                  ? "#C68EBC"
-                  : "#fff",
+              onClick={() => handleSelectCategories(option)}
+              style={{
+                fontWeight: value.categories.includes(option) ? "700" : "400",
               }}
-            />
-            Activiteiten
-          </Option>
-          <Option
-            initial={false}
-            onClick={() => handleSelectCategories("Ervaringen")}
-            style={{
-              fontWeight: value.categories.includes("Ervaringen")
-                ? "700"
-                : "400",
-            }}
-            animate={{
-              backgroundColor: value.categories.includes("Ervaringen")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.categories.includes("Ervaringen")
-                ? "#5f1d7d"
-                : "#595959",
-            }}
-          >
-            <Dot
-              initial={false}
               animate={{
-                backgroundColor: value.categories.includes("Ervaringen")
-                  ? "#C68EBC"
+                backgroundColor: value.categories.includes(option)
+                  ? "#f0f0f0"
                   : "#fff",
+                color: value.categories.includes(option)
+                  ? "#5f1d7d"
+                  : "#595959",
               }}
-            />
-            Ervaringen
-          </Option>
-          <Option
-            initial={false}
-            onClick={() => handleSelectCategories("Verhalen")}
-            style={{
-              fontWeight: value.categories.includes("Verhalen") ? "700" : "400",
-            }}
-            animate={{
-              backgroundColor: value.categories.includes("Verhalen")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.categories.includes("Verhalen")
-                ? "#5f1d7d"
-                : "#595959",
-            }}
-          >
-            <Dot
-              initial={false}
-              animate={{
-                backgroundColor: value.categories.includes("Verhalen")
-                  ? "#C68EBC"
-                  : "#fff",
-              }}
-            />
-            Verhalen
-          </Option>
-          <Option
-            initial={false}
-            onClick={() => handleSelectCategories("Foto's")}
-            style={{
-              fontWeight: value.categories.includes("Foto's") ? "700" : "400",
-            }}
-            animate={{
-              backgroundColor: value.categories.includes("Foto's")
-                ? "#f0f0f0"
-                : "#fff",
-              color: value.categories.includes("Foto's")
-                ? "#5f1d7d"
-                : "#595959",
-            }}
-          >
-            <Dot
-              initial={false}
-              animate={{
-                backgroundColor: value.categories.includes("Foto's")
-                  ? "#C68EBC"
-                  : "#fff",
-              }}
-            />
-            Foto&apos;s
-          </Option>
+            >
+              <Dot
+                initial={false}
+                animate={{
+                  backgroundColor: value.categories.includes(option)
+                    ? "#C68EBC"
+                    : "#fff",
+                }}
+              />
+              {option}
+            </Option>
+          ))}
         </div>
       </Wrapper>
     </>

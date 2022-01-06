@@ -11,33 +11,40 @@ import { firestore } from "../lib/firebase";
 import ImageUploader from "./generic/ImageUploader";
 
 const Register = () => {
+  const [downloadURL, setDownloadURL] = useState(null);
+
   const [iAm, setIAm] = useState("Mantelzorger, case manager ...");
   const [iCare, setICare] = useState("Mijn vader, mijn moeder ...");
   const [phase, setPhase] = useState("Middenfase");
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { user } = useContext(UserContext);
 
   const router = useRouter();
 
   const handleRegister = async (data) => {
-    console.log(data);
-    try {
-      firestore
-        .collection("users")
-        .doc(user.uid)
-        .set(
-          {
-            ...data,
-            iAm,
-            iCare,
-          },
-          { merge: true }
-        );
-      router.push("/onboard");
-    } catch (error) {
-      console.log(error);
-      toast.error("Er is iets misgegaan");
-    }
+    if (downloadURL) {
+      try {
+        firestore
+          .collection("users")
+          .doc(user.uid)
+          .set(
+            {
+              ...data,
+              iAm,
+              iCare,
+            },
+            { merge: true }
+          );
+        router.push("/onboard");
+      } catch (error) {
+        console.log(error);
+        toast.error("Er is iets misgegaan");
+      }
+    } else toast.error("Nog geen profielfoto uitgekozen");
   };
 
   return (
@@ -61,6 +68,7 @@ const Register = () => {
               label="Voornaam"
               placeholder="Voornaam"
             />
+            <ErrorSpan marginTop="16px">{errors?.firstname?.message}</ErrorSpan>
             <Dropdown
               label="Ik ben"
               title={iAm}
@@ -83,9 +91,10 @@ const Register = () => {
                 maxLength: { value: 32, message: "Maximaal 32 tekens" },
                 minLength: { value: 2, message: "Minimaal 2 tekens" },
               })}
-              label="Hoeveel uur per week"
-              placeholder="10 uur"
+              label="Hoeveel uur per dag"
+              placeholder="4 uur"
             />
+            <ErrorSpan>{errors?.hoursWeek?.message}</ErrorSpan>
 
             <div style={{ marginBottom: 16, marginTop: -16 }}>
               <Dropdown
@@ -113,24 +122,35 @@ const Register = () => {
               style={{ marginTop: 0 }}
               {...register("whoAmI", {
                 required: { value: true, message: "Dit veld is verplicht" },
-                maxLength: { value: 32, message: "Maximaal 32 tekens" },
+                maxLength: { value: 300, message: "Maximaal 300 tekens" },
                 minLength: { value: 2, message: "Minimaal 2 tekens" },
               })}
               label="Over mij"
               placeholder="Vertel wat over jezelf"
             />
-
+            <ErrorSpan marginTop="-10px">{errors?.whoAmI?.message}</ErrorSpan>
             <Button type="submit" fullWidth variant="fill">
               Profiel compleet maken
             </Button>
           </form>
         </FormWrapper>
 
-        <ImageUploader uid={user.uid} />
+        <ImageUploader
+          downloadURL={downloadURL}
+          setDownloadURL={setDownloadURL}
+          uid={user.uid}
+        />
       </>
     </Wrapper>
   );
 };
+
+export const ErrorSpan = styled.span`
+  display: inline-block;
+  position: relative;
+  color: hsl(0, 70%, 70%);
+  margin-top: ${(props) => props.marginTop};
+`;
 
 export const Wrapper = styled.div`
   width: 100%;

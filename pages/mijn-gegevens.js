@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -13,6 +13,7 @@ import { firestore } from "../lib/firebase";
 import { GoBack } from "../styles/homeStyles";
 import { OtherWrapper } from "../styles/loginStyles";
 import ImageUploader from "../components/generic/ImageUploader";
+import { ErrorSpan } from "../components/Register";
 
 const MyData = () => {
   const userData = useContext(UserContext);
@@ -20,9 +21,26 @@ const MyData = () => {
   const [iCare, setICare] = useState(userData?.iCare);
   const [phase, setPhase] = useState(userData?.phase);
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const router = useRouter();
+
+  useEffect(() => {
+    reset({
+      firstname: userData.firstname,
+      hoursWeek: userData.hoursWeek,
+      whoAmI: userData.whoAmI,
+    });
+
+    setICare(userData?.iCare);
+    setIAm(userData?.iAm);
+    setPhase(userData?.phase);
+  }, [userData]);
 
   const handleEditProfile = async (data) => {
     try {
@@ -62,7 +80,6 @@ const MyData = () => {
       <FormWrapper>
         <form onSubmit={handleSubmit(handleEditProfile)}>
           <Input
-            defaultValue={userData.firstname}
             style={{ marginBottom: -8 }}
             {...register("firstname", {
               required: { value: true, message: "Dit veld is verplicht" },
@@ -72,6 +89,8 @@ const MyData = () => {
             label="Voornaam"
             placeholder="Voornaam"
           />
+          <ErrorSpan>{errors?.firstname?.message}</ErrorSpan>
+
           <Dropdown
             label="Ik ben"
             title={iAm}
@@ -95,10 +114,10 @@ const MyData = () => {
               maxLength: { value: 32, message: "Maximaal 32 tekens" },
               minLength: { value: 2, message: "Minimaal 2 tekens" },
             })}
-            defaultValue={userData.hoursWeek}
-            label="Hoeveel uur per week"
-            placeholder="10 uur"
+            label="Hoeveel uur per dag"
+            placeholder="4 uur"
           />
+          <ErrorSpan>{errors?.hoursWeek?.message}</ErrorSpan>
 
           <div style={{ marginBottom: 16, marginTop: -16 }}>
             <Dropdown
@@ -123,17 +142,16 @@ const MyData = () => {
 
           <StyledLabel>Over mij</StyledLabel>
           <TextArea
-            defaultValue={userData?.whoAmI}
             style={{ marginTop: 0 }}
             {...register("whoAmI", {
               required: { value: true, message: "Dit veld is verplicht" },
-              maxLength: { value: 32, message: "Maximaal 32 tekens" },
+              maxLength: { value: 300, message: "Maximaal 300 tekens" },
               minLength: { value: 2, message: "Minimaal 2 tekens" },
             })}
             label="Over mij"
             placeholder="Vertel wat over jezelf"
           />
-
+          <ErrorSpan>{errors?.whoAmI?.message}</ErrorSpan>
           <Button type="submit" fullWidth variant="fill">
             Opslaan
           </Button>

@@ -5,10 +5,14 @@ import styled from "styled-components";
 import { auth, storage, STATE_CHANGED, firestore } from "../../lib/firebase";
 
 // Uploads images to Firebase Storage
-export default function ImageUploader({ photo, uid }) {
+export default function ImageUploader({
+  photo,
+  uid,
+  downloadURL,
+  setDownloadURL,
+}) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [downloadURL, setDownloadURL] = useState(null);
   const hiddenFileInput = useRef(null);
 
   const handleClick = (event) => {

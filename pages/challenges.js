@@ -12,13 +12,15 @@ import { debounce } from "lodash";
 import { HamburgerMenu } from "../components/HamburgerMenu";
 import { firestore, postToJSON } from "../lib/firebase";
 import { Row } from "./[uid]/[slug]";
-import { User } from "react-feather";
+import { Filter, User } from "react-feather";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
 import { useContext } from "react";
 import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import AuthCheck from "../components/generic/AuthCheck";
+import FilterModal from "../components/generic/FilterModal";
+import { AnimatePresence } from "framer-motion";
 
 const optionsVariants = {
   selected: {
@@ -44,14 +46,6 @@ const indicatorVariants = {
   }),
 };
 
-const options = [
-  { name: "Alles" },
-  { name: "Activiteiten" },
-  { name: "Binnen" },
-  { name: "Buiten" },
-  { name: "Knutselen" },
-];
-
 export default function Challenges(props) {
   const [phaseColor, setPhaseColor] = useState("#faca3b");
   const [phase, setPhase] = useState("Beginfase");
@@ -62,6 +56,11 @@ export default function Challenges(props) {
   const [selected, setSelected] = useState("Alles");
   const [indicatorY, setIndicatorY] = useState(0);
   const userData = useContext(UserContext);
+  const [filterModal, setFilterModal] = useState();
+  const [filterOn, setFilterOn] = useState({
+    categories: ["Activiteiten", "Binnen", "Buiten", "Knutselen", "Sport"],
+  });
+
   const [realtimeChallenges] = useCollectionData(
     firestore.collection("challenges"),
     {
@@ -129,8 +128,7 @@ export default function Challenges(props) {
   const challenges = realtimeChallenges ? realtimeChallenges : props.challenges;
 
   const filteredChallenges = challenges.filter((challenge) => {
-    if (selected === "Alles") return challenge;
-    else return challenge.category === selected;
+    return filterOn.categories.includes(challenge.category);
   });
 
   return (
@@ -140,25 +138,25 @@ export default function Challenges(props) {
 
         <div
           style={{
-            overflowX: "hidden",
-            width: "calc(100% + 48px)",
-            position: "relative",
-            left: -24,
+            fontSize: "0.95rem",
+            margin: "48px 0px 32px 0px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            color: "#5f1d7d",
+            fontWeight: "700",
           }}
         >
-          <OptionsWrapper dragConstraints={{ right: 0, left: -215 }} drag="x">
-            {options.map((option) => (
-              <Option
-                initial={false}
-                key={option.name}
-                onClick={() => setSelected(option.name)}
-                animate={selected === option.name ? "selected" : "default"}
-                variants={optionsVariants}
-              >
-                {option.name}
-              </Option>
-            ))}
-          </OptionsWrapper>
+          <div
+            onClick={() => setFilterModal(true)}
+            style={{
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+            }}
+          >
+            <Filter size={22} /> Filters
+          </div>
         </div>
 
         <HamburgerMenu menu={true} toggleMenu={false} />
@@ -210,6 +208,24 @@ export default function Challenges(props) {
           ))}
         </Col>
       </Wrapper>
+
+      <AnimatePresence>
+        {filterModal && (
+          <FilterModal
+            categoriesOptions={[
+              "Activiteiten",
+              "Binnen",
+              "Buiten",
+              "Knutselen",
+              "Sport",
+            ]}
+            noPhase
+            modalFunc={setFilterModal}
+            func={setFilterOn}
+            value={filterOn}
+          />
+        )}
+      </AnimatePresence>
     </AuthCheck>
   );
 }

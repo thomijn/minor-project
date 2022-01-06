@@ -86,10 +86,6 @@ export default function Home(props) {
     );
   });
 
-  filteredPosts.sort;
-
-  console.log(filteredPosts);
-
   useEffect(() => {
     if (id) {
       const element = document.getElementById(id);
@@ -256,7 +252,15 @@ export default function Home(props) {
                           </Row>
                         </Card>
                       )}
-                      <Card layout id={post.slug} ref={ref2} key={post.slug}>
+                      <Card
+                        onClick={() => {
+                          router.push(`/${post.uid}/${post.slug}`);
+                        }}
+                        layout
+                        id={post.slug}
+                        ref={ref2}
+                        key={post.slug}
+                      >
                         <div
                           style={{
                             width: "100%",
@@ -274,7 +278,7 @@ export default function Home(props) {
                             {post.title}{" "}
                             <TitleSpan>
                               {dayjs(post.createdAt).format("D MMMM")} |{" "}
-                              {post.firstname}
+                              {post.firstname} | {post.phase}
                             </TitleSpan>
                           </motion.h2>
 
@@ -336,6 +340,12 @@ export default function Home(props) {
       <AnimatePresence>
         {filterModal && (
           <FilterModal
+            categoriesOptions={[
+              "Activiteiten",
+              "Ervaringen",
+              "Verhalen",
+              "Foto's",
+            ]}
             modalFunc={setFilterModal}
             func={setFilterOn}
             value={filterOn}

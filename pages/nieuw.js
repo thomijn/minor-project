@@ -15,6 +15,7 @@ import { GoBack, Wrapper } from "../styles/homeStyles";
 import { auth, firestore, serverTimestamp } from "../lib/firebase";
 import { UserContext } from "../lib/context";
 import ImageUploaderPost from "../components/generic/ImageUploaderPost";
+import { ErrorSpan } from "../components/Register";
 
 const NewPost = () => {
   const [who, setWho] = useState("Publiek");
@@ -23,8 +24,14 @@ const NewPost = () => {
   const [downloadURL, setDownloadURL] = useState(null);
 
   const router = useRouter();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const userData = useContext(UserContext);
+
+  console.log(downloadURL);
 
   const handleNewPost = async (formData) => {
     const slug = encodeURI(kebabCase(formData.title));
@@ -120,6 +127,7 @@ const NewPost = () => {
             label="Titel"
             placeholder="Voer hier een titel in"
           />
+          <ErrorSpan>{errors?.title?.message}</ErrorSpan>
 
           <TextArea
             {...register("message", {
@@ -128,6 +136,7 @@ const NewPost = () => {
             })}
             placeholder="Bericht schrijven"
           />
+          <ErrorSpan>{errors?.message?.message}</ErrorSpan>
 
           <Button type="submit" fullWidth variant="fill">
             Bericht delen
