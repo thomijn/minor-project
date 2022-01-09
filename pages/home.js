@@ -144,7 +144,7 @@ export default function Home(props) {
 
   return (
     <AuthCheck>
-      <Wrapper layoutScroll style={{ overflowY: "scroll" }}>
+      <Wrapper>
         <h1>Overzicht</h1>
 
         <div
@@ -252,15 +252,7 @@ export default function Home(props) {
                           </Row>
                         </Card>
                       )}
-                      <Card
-                        onClick={() => {
-                          router.push(`/${post.uid}/${post.slug}`);
-                        }}
-                        layout
-                        id={post.slug}
-                        ref={ref2}
-                        key={post.slug}
-                      >
+                      <Card layout id={post.slug} ref={ref2} key={post.slug}>
                         <div
                           style={{
                             width: "100%",
@@ -273,7 +265,6 @@ export default function Home(props) {
                             transition={{ duration: 0 }}
                             layoutScroll
                             layout="position"
-                            layoutId={post.title}
                           >
                             {post.title}{" "}
                             <TitleSpan>
@@ -282,7 +273,11 @@ export default function Home(props) {
                             </TitleSpan>
                           </motion.h2>
 
-                          <Image>
+                          <Image
+                            onClick={() => {
+                              router.push(`/${post.uid}/${post.slug}`);
+                            }}
+                          >
                             <motion.img src={post?.userImage} />
                           </Image>
                         </div>
@@ -292,7 +287,6 @@ export default function Home(props) {
                             transition={{ duration: 0 }}
                             layoutScroll
                             layout
-                            layoutId={post.image}
                             src={post.image}
                           />
                         )}
