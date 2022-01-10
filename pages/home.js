@@ -281,6 +281,7 @@ export default function Home(props) {
                           }}
                         >
                           <motion.h2
+                            style={{ maxWidth: "70%" }}
                             onClick={() => {
                               router.push(`/${post.uid}/${post.slug}`);
                             }}
