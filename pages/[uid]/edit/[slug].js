@@ -77,10 +77,7 @@ const EditPost = () => {
         userImage: userData.userImage,
         firstname: userData.firstname,
         published: true,
-        createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        likeCount: 0,
-        comments: [],
       };
 
       await ref.set(data, { merge: true });
