@@ -50,6 +50,7 @@ const SideMenu = () => {
   return (
     <>
       <SideMenuWrapper
+        initial={{ x: "100%" }}
         transition={{ duration: 0.6, type: "spring" }}
         animate={{ x: !menu ? "100%" : "10%" }}
       >

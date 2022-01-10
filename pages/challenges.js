@@ -135,7 +135,7 @@ export default function Challenges(props) {
   return (
     <AuthCheck>
       <Wrapper>
-        <h1 style={{ marginBottom: 32 }}>Challenges</h1>
+        <h1 style={{ marginBottom: 32 }}>Activiteiten</h1>
 
         <div
           style={{

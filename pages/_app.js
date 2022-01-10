@@ -12,12 +12,10 @@ export default function App({ Component, pageProps, router }) {
 
   return (
     <UserContext.Provider value={userData}>
-      <RouterScrollProvider>
-        <GlobalStyle />
-        <SideMenu />
-        <Toaster />
-        <Component {...pageProps} key={router.pathname} />
-      </RouterScrollProvider>
+      <GlobalStyle />
+      <SideMenu />
+      <Toaster />
+      <Component {...pageProps} key={router.pathname} />
     </UserContext.Provider>
   );
 }
