@@ -20,6 +20,7 @@ const MyData = () => {
   const [iAm, setIAm] = useState(userData?.iAm);
   const [iCare, setICare] = useState(userData?.iCare);
   const [phase, setPhase] = useState(userData?.phase);
+  const [downloadURL, setDownloadURL] = useState(null);
 
   const {
     register,
@@ -161,7 +162,11 @@ const MyData = () => {
           <a onClick={() => router.push("/home")}>Wijzigingen annuleren</a>
         </OtherWrapper>
       </FormWrapper>
-      <ImageUploader photo={userData?.userImage} />
+      <ImageUploader
+        downloadURL={downloadURL}
+        setDownloadURL={setDownloadURL}
+        photo={userData?.userImage}
+      />
     </Wrapper>
   );
 };

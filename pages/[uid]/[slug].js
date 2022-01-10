@@ -1,5 +1,11 @@
 import { useRouter } from "next/dist/client/router";
-import { Camera, ChevronLeft, MessageSquare, Trash2 } from "react-feather";
+import {
+  Camera,
+  ChevronLeft,
+  Edit,
+  MessageSquare,
+  Trash2,
+} from "react-feather";
 import styled from "styled-components";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import Link from "next/link";
@@ -82,6 +88,21 @@ const Post = (props) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      firestore
+        .collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("posts")
+        .doc(slug)
+        .delete();
+      toast.success("Bericht verwijderd");
+      router.push("/home");
+    } catch (error) {
+      toast.error("Er is iets fout gegaan");
+    }
+  };
+
   return (
     <AuthCheck>
       <Wrapper>
@@ -109,30 +130,74 @@ const Post = (props) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <div style={{ display: "flex", gap: 8 }}>
-            <Option
-              style={{
-                backgroundColor: "#faca3b",
-                color: "#5f1d7d",
-                borderColor: "#faca3b",
-                fontSize: "0.9rem",
-                padding: "4px 8px",
-                marginBottom: "16px",
-              }}
-            >
-              {post?.phase}
-            </Option>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <Option
+                style={{
+                  backgroundColor: "#faca3b",
+                  color: "#5f1d7d",
+                  borderColor: "#faca3b",
+                  fontSize: "0.9rem",
+                  padding: "6px 8px",
+                  marginBottom: "16px",
+                }}
+              >
+                {post?.phase}
+              </Option>
 
-            <Option
-              style={{
-                backgroundColor: "#E2C7DD",
-                fontSize: "0.9rem",
-                padding: "4px 8px",
-                marginBottom: "16px",
-              }}
-            >
-              {post.category}
-            </Option>
+              <Option
+                style={{
+                  backgroundColor: "#E2C7DD",
+                  fontSize: "0.9rem",
+                  padding: "6px 8px",
+                  marginBottom: "16px",
+                }}
+              >
+                {post.category}
+              </Option>
+            </div>
+            {auth?.currentUser?.uid === uid && (
+              <div style={{ display: "flex", gap: 8 }}>
+                <div
+                  onClick={() => handleDelete()}
+                  style={{
+                    backgroundColor: "#F2F2F2",
+                    width: 40,
+                    height: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <Trash2 size={20} strokeWidth={2} color="#5f1d7d" />
+                </div>
+                <div
+                  onClick={() =>
+                    router.push({
+                      pathname: "/[uid]/edit/[slug]",
+                      query: { uid, slug },
+                    })
+                  }
+                  style={{
+                    backgroundColor: "#F2F2F2",
+                    width: 40,
+                    height: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <Edit size={20} strokeWidth={2} color="#5f1d7d" />
+                </div>
+              </div>
+            )}
           </div>
 
           <p style={{ whiteSpace: "pre-wrap" }}>{post.message}</p>

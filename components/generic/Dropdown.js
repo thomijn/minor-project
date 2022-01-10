@@ -14,6 +14,7 @@ const Dropdown = ({
   extraLabel,
   style,
   info,
+  begin,
 }) => {
   const [clicked, setClicked] = useState(false);
   const [titleHovered, setTitleHovered] = useState(false);
@@ -143,7 +144,7 @@ const Dropdown = ({
           setTitleHovered(false);
         }}
       >
-        <Title>{title}</Title>
+        <Title style={{ color: begin ? "#CBCBCB" : "#000" }}>{title}</Title>
         <ArrowSvgContainer
           transition={{ duration: 0 }}
           animate={{

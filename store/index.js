@@ -5,4 +5,13 @@ export const useStore = create((set) => ({
   id: undefined,
   toggleMenu: (data) => set({ menu: data }),
   setId: (data) => set({ id: data }),
+  filterOnHome: {
+    phase: [],
+    categories: [],
+  },
+  filterOnChallenges: {
+    categories: [],
+  },
+  setFilterOnHome: (data) => set({ filterOnHome: data }),
+  setFilterOnChallenges: (data) => set({ filterOnChallenges: data }),
 }));

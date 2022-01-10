@@ -37,7 +37,7 @@ import { UserContext } from "../lib/context";
 import toast from "react-hot-toast";
 
 export default function Home(props) {
-  const { posts, challenges } = props;
+  let { posts, challenges } = props;
   const [phaseColor, setPhaseColor] = useState("#faca3b");
   const [phase, setPhase] = useState("Beginfase");
   const [isScrolling, setScrolling] = useState(false);
@@ -48,14 +48,11 @@ export default function Home(props) {
   const [whoSelected, setWhoSelected] = useState(2);
   const [indicatorY, setIndicatorY] = useState(0);
   const [sortOn, setSortOn] = useState("Nieuw");
-  const [filterOn, setFilterOn] = useState({
-    phase: ["Beginfase", "Middenfase", "Eindfase"],
-    categories: ["Activiteiten", "Ervaringen", "Verhalen", "Foto's"],
-  });
+
+  const { filterOnHome, setFilterOnHome, id } = useStore();
   const [sortModal, setSortModal] = useState();
   const [filterModal, setFilterModal] = useState();
   const router = useRouter();
-  const { id } = useStore();
   const userData = useContext(UserContext);
 
   const [realtimeChallenges] = useCollectionData(
@@ -63,6 +60,13 @@ export default function Home(props) {
     {
       idField: "id",
     }
+  );
+
+  const [realtimePosts] = useCollectionData(
+    firestore
+      .collectionGroup("posts")
+      .where("published", "==", true)
+      .orderBy("createdAt", "desc")
   );
 
   useEffect(() => {
@@ -79,11 +83,26 @@ export default function Home(props) {
     );
   }, [isScrolling]);
 
+  posts = realtimePosts
+    ? realtimePosts.map((post) => {
+        return {
+          ...post,
+          // Gotcha! firestore timestamp NOT serializable to JSON. Must convert to milliseconds
+          createdAt: post.createdAt.toMillis(),
+          updatedAt: post.updatedAt.toMillis(),
+        };
+      })
+    : posts;
+
   const filteredPosts = posts.filter((post) => {
-    return (
-      filterOn.phase.includes(post.phase) &&
-      filterOn.categories.includes(post.category)
-    );
+    return filterOnHome.phase.length === 0
+      ? ["Beginfase", "Middenfase", "Eindfase"].includes(post.phase)
+      : filterOnHome.phase.includes(post.phase) &&
+        filterOnHome.categories.length === 0
+      ? ["Activiteiten", "Ervaringen", "Verhalen", "Foto's"].includes(
+          post.category
+        )
+      : filterOnHome.categories.includes(post.category);
   });
 
   useEffect(() => {
@@ -262,6 +281,9 @@ export default function Home(props) {
                           }}
                         >
                           <motion.h2
+                            onClick={() => {
+                              router.push(`/${post.uid}/${post.slug}`);
+                            }}
                             transition={{ duration: 0 }}
                             layoutScroll
                             layout="position"
@@ -273,17 +295,16 @@ export default function Home(props) {
                             </TitleSpan>
                           </motion.h2>
 
-                          <Image
-                            onClick={() => {
-                              router.push(`/${post.uid}/${post.slug}`);
-                            }}
-                          >
+                          <Image>
                             <motion.img src={post?.userImage} />
                           </Image>
                         </div>
 
                         {post.image && (
                           <PostImage
+                            onClick={() => {
+                              router.push(`/${post.uid}/${post.slug}`);
+                            }}
                             transition={{ duration: 0 }}
                             layoutScroll
                             layout
@@ -291,7 +312,13 @@ export default function Home(props) {
                           />
                         )}
 
-                        <p>{post.message}</p>
+                        <p
+                          onClick={() => {
+                            router.push(`/${post.uid}/${post.slug}`);
+                          }}
+                        >
+                          {post.message}
+                        </p>
                         <Link href={`/${post.uid}/${post.slug}`}>
                           Lees meer...
                         </Link>
@@ -341,8 +368,8 @@ export default function Home(props) {
               "Foto's",
             ]}
             modalFunc={setFilterModal}
-            func={setFilterOn}
-            value={filterOn}
+            func={setFilterOnHome}
+            value={filterOnHome}
           />
         )}
       </AnimatePresence>

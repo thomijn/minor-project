@@ -24,8 +24,8 @@ export default function Enter() {
   const router = useRouter();
 
   useEffect(() => {
-    if (user && iAm) router.push("/home");
-  }, [user, router, iAm]);
+    if (user && iAm && !noAccount) router.push("/home");
+  }, [user, router, iAm, noAccount]);
 
   return (
     <main>

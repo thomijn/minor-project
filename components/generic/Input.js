@@ -37,7 +37,8 @@ const StyledInput = styled.input`
   box-sizing: border-box;
 
   &:focus {
-    outline: 2px solid #fbcb22;
+    outline: none;
+    box-shadow: 0 0 0 2px #fbcb22;
   }
 
   &::placeholder {
@@ -87,7 +88,8 @@ export const TextArea = styled.textarea`
   margin-bottom: 8px;
 
   &:focus {
-    outline: 2px solid #fbcb22;
+    outline: none;
+    box-shadow: 0 0 0 2px #fbcb22;
   }
 
   &::placeholder {

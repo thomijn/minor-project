@@ -79,7 +79,7 @@ export default function ImageUploader({
       {!downloadURL && uploading ? (
         <Loader size={30} color="gray" />
       ) : (
-        <Camera size={30} color="gray" />
+        !downloadURL && <Camera size={30} color="gray" />
       )}
 
       {!downloadURL && photo && <motion.img src={photo} />}

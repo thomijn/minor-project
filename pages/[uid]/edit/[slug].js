@@ -1,26 +1,27 @@
 import { useRouter } from "next/dist/client/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft } from "react-feather";
 import { useForm } from "react-hook-form";
 import kebabCase from "lodash.kebabcase";
 import { useContext } from "react";
 import toast from "react-hot-toast";
 
-import AuthCheck from "../components/generic/AuthCheck";
-import Dropdown from "../components/generic/Dropdown";
-import Input, { TextArea } from "../components/generic/Input";
-import Button from "../components/generic/Button";
-import { HamburgerMenu } from "../components/HamburgerMenu";
-import { GoBack, Wrapper } from "../styles/homeStyles";
-import { auth, firestore, serverTimestamp } from "../lib/firebase";
-import { UserContext } from "../lib/context";
-import ImageUploaderPost from "../components/generic/ImageUploaderPost";
-import { ErrorSpan } from "../components/Register";
+import AuthCheck from "../../../components/generic/AuthCheck";
+import Dropdown from "../../../components/generic/Dropdown";
+import Input, { TextArea } from "../../../components/generic/Input";
+import Button from "../../../components/generic/Button";
+import { HamburgerMenu } from "../../../components/HamburgerMenu";
+import { GoBack, Wrapper } from "../../../styles/homeStyles";
+import { auth, firestore, serverTimestamp } from "../../../lib/firebase";
+import { UserContext } from "../../../lib/context";
+import ImageUploaderPost from "../../../components/generic/ImageUploaderPost";
+import { ErrorSpan } from "../../../components/Register";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
-const NewPost = () => {
-  const [who, setWho] = useState("Publiek");
-  const [category, setCategory] = useState("Activiteiten");
-  const [phase, setPhase] = useState("Middenfase");
+const EditPost = () => {
+  const [who, setWho] = useState();
+  const [category, setCategory] = useState();
+  const [phase, setPhase] = useState();
   const [downloadURL, setDownloadURL] = useState(null);
 
   const router = useRouter();
@@ -28,12 +29,33 @@ const NewPost = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
   const userData = useContext(UserContext);
 
+  const { slug, uid } = router.query;
+
+  const postRef = firestore
+    .collection("users")
+    .doc(uid)
+    .collection("posts")
+    .doc(slug);
+  const [realtimePost] = useDocumentData(postRef);
+
   console.log(downloadURL);
 
-  const handleNewPost = async (formData) => {
+  useEffect(() => {
+    if (realtimePost) {
+      setWho(realtimePost.who);
+      setPhase(realtimePost.phase);
+      setCategory(realtimePost.category);
+      setValue("title", realtimePost.title);
+      setValue("message", realtimePost.message);
+      setDownloadURL(realtimePost.image);
+    }
+  }, [realtimePost]);
+
+  const handleEditPost = async (formData) => {
     const slug = encodeURI(kebabCase(formData.title));
 
     try {
@@ -61,7 +83,7 @@ const NewPost = () => {
         comments: [],
       };
 
-      await ref.set(data);
+      await ref.set(data, { merge: true });
       toast.success("Bericht gedeeld!");
       router.push("/home");
     } catch (error) {
@@ -79,10 +101,10 @@ const NewPost = () => {
         <HamburgerMenu />
 
         <h1>
-          Bericht <br /> plaatsen
+          Bericht <br /> wijzigen
         </h1>
 
-        <form onSubmit={handleSubmit(handleNewPost)}>
+        <form onSubmit={handleSubmit(handleEditPost)}>
           <div>
             <Dropdown
               label="Zichtbaar voor"
@@ -119,6 +141,8 @@ const NewPost = () => {
           />
 
           <Input
+            style={{ opacity: 0.4 }}
+            disabled
             {...register("title", {
               required: { value: true, message: "Dit veld is verplicht" },
               maxLength: { value: 64, message: "Maximaal 64 tekens" },
@@ -139,7 +163,7 @@ const NewPost = () => {
           <ErrorSpan>{errors?.message?.message}</ErrorSpan>
 
           <Button type="submit" fullWidth variant="fill">
-            Bericht delen
+            Bericht Wijzigen
           </Button>
         </form>
       </Wrapper>
@@ -147,4 +171,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default EditPost;

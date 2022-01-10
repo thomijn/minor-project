@@ -15,7 +15,7 @@ const Register = () => {
 
   const [iAm, setIAm] = useState("Mantelzorger, case manager ...");
   const [iCare, setICare] = useState("Mijn vader, mijn moeder ...");
-  const [phase, setPhase] = useState("Middenfase");
+  const [phase, setPhase] = useState("Kies een fase...");
   const {
     register,
     handleSubmit,
@@ -26,31 +26,41 @@ const Register = () => {
   const router = useRouter();
 
   const handleRegister = async (data) => {
-    if (downloadURL) {
-      try {
-        firestore
-          .collection("users")
-          .doc(user.uid)
-          .set(
-            {
-              ...data,
-              iAm,
-              iCare,
-            },
-            { merge: true }
-          );
-        router.push("/onboard");
-      } catch (error) {
-        console.log(error);
-        toast.error("Er is iets misgegaan");
-      }
-    } else toast.error("Nog geen profielfoto uitgekozen");
+    if (iAm === "Mantelzorger, case manager ...")
+      return toast.error("Jouw rol is nog niet gekozen");
+
+    if (iCare === "Mijn vader, mijn moeder ...")
+      return toast.error("'Ik zorg voor' is nog niet gekozen");
+
+    if (phase === "Kies een fase...")
+      return toast.error("Fase is nog niet gekozen");
+
+    try {
+      firestore
+        .collection("users")
+        .doc(user.uid)
+        .set(
+          {
+            ...data,
+            iAm,
+            iCare,
+            phase,
+            userImage: downloadURL
+              ? downloadURL
+              : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+          },
+          { merge: true }
+        );
+      router.push("/onboard");
+    } catch (error) {
+      console.log(error);
+      toast.error("Er is iets misgegaan");
+    }
   };
 
   return (
     <Wrapper>
       <Circle />
-
       <>
         <h1>
           Maak een <br /> account <br />
@@ -70,6 +80,8 @@ const Register = () => {
             />
             <ErrorSpan marginTop="16px">{errors?.firstname?.message}</ErrorSpan>
             <Dropdown
+              begin={iAm === "Mantelzorger, case manager ..."}
+              style={{ color: "red" }}
               label="Ik ben"
               title={iAm}
               setTitle={setIAm}
@@ -78,6 +90,7 @@ const Register = () => {
             />
             <div style={{ marginBottom: 16, marginTop: 0 }}>
               <Dropdown
+                begin={iCare === "Mijn vader, mijn moeder ..."}
                 label="Ik zorg voor"
                 title={iCare}
                 setTitle={setICare}
@@ -89,7 +102,7 @@ const Register = () => {
               {...register("hoursWeek", {
                 required: { value: true, message: "Dit veld is verplicht" },
                 maxLength: { value: 32, message: "Maximaal 32 tekens" },
-                minLength: { value: 2, message: "Minimaal 2 tekens" },
+                minLength: { value: 1, message: "Minimaal 1 tekens" },
               })}
               label="Hoeveel uur per dag"
               placeholder="4 uur"
@@ -98,6 +111,7 @@ const Register = () => {
 
             <div style={{ marginBottom: 16, marginTop: -16 }}>
               <Dropdown
+                begin={phase === "Kies een fase..."}
                 info={
                   <>
                     <h4>Waarom vragen wij hiernaar?</h4>{" "}

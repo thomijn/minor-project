@@ -21,6 +21,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import AuthCheck from "../components/generic/AuthCheck";
 import FilterModal from "../components/generic/FilterModal";
 import { AnimatePresence } from "framer-motion";
+import { useStore } from "../store";
 
 const optionsVariants = {
   selected: {
@@ -57,10 +58,7 @@ export default function Challenges(props) {
   const [indicatorY, setIndicatorY] = useState(0);
   const userData = useContext(UserContext);
   const [filterModal, setFilterModal] = useState();
-  const [filterOn, setFilterOn] = useState({
-    categories: ["Activiteiten", "Binnen", "Buiten", "Knutselen", "Sport"],
-  });
-
+  const { filterOnChallenges, setFilterOnChallenges } = useStore();
   const [realtimeChallenges] = useCollectionData(
     firestore.collection("challenges"),
     {
@@ -104,7 +102,6 @@ export default function Challenges(props) {
 
   const handleParticipate = async (challenge) => {
     const challengeRef = firestore.collection("challenges").doc(challenge.id);
-
     const participate = challenge?.participants.includes(userData.user.uid);
 
     try {
@@ -128,7 +125,11 @@ export default function Challenges(props) {
   const challenges = realtimeChallenges ? realtimeChallenges : props.challenges;
 
   const filteredChallenges = challenges.filter((challenge) => {
-    return filterOn.categories.includes(challenge.category);
+    return filterOnChallenges.categories.length === 0
+      ? ["Activiteiten", "Binnen", "Buiten", "Knutselen", "Sport"].includes(
+          challenge.category
+        )
+      : filterOnChallenges.categories.includes(challenge.category);
   });
 
   return (
@@ -221,8 +222,8 @@ export default function Challenges(props) {
             ]}
             noPhase
             modalFunc={setFilterModal}
-            func={setFilterOn}
-            value={filterOn}
+            func={setFilterOnChallenges}
+            value={filterOnChallenges}
           />
         )}
       </AnimatePresence>

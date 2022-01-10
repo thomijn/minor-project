@@ -103,6 +103,7 @@ const SideMenu = () => {
           </UnderWrapper>
 
           <Logo width={50} src="/images/logo.png" />
+          <LogoText>Mantelcare</LogoText>
         </motion.div>
       </SideMenuWrapper>
       <AnimatePresence>
@@ -241,7 +242,18 @@ export const Logo = styled(motion.img)`
   margin: auto;
   left: -10%;
   right: 0;
-  bottom: 32px;
+  bottom: 58px;
+`;
+
+export const LogoText = styled(motion.p)`
+  position: absolute;
+  margin: auto;
+  right: 0;
+  left: -10%;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  bottom: 22px;
 `;
 
 export default SideMenu;
